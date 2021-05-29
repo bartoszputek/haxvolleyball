@@ -16,7 +16,8 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-CMD [ "npm", "run", "dev"]
+CMD [ "npm", "run", "watch"]
 
 # docker build -t haxvolleyball .
-# docker run -p 8100:8080 -v /mnt/c/Bartek/Informatyka/projekty/haxvolleyball/./:/usr/src/app haxvolleyball
+# docker run -p 8100:8080 -v /mnt/c/Bartek/Informatyka/projekty/haxvolleyball/:/usr/src/app haxvolleyball
+# docker run -p 8100:8080 -v ~/Informatyka/haxvolleyball/:/usr/src/app haxvolleyball

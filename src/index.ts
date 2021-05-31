@@ -16,7 +16,7 @@ const options = {
 const io = require('socket.io')(httpServer, options);
 
 io.on('connection', (socket: Socket) => {
-  console.log(socket);
+  console.log(socket.id);
 });
 
 httpServer.listen(8080);

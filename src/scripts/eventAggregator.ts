@@ -1,9 +1,11 @@
-import { IEventAggregator, ISubscriber, MyEvent } from './types';
+import {
+  IEventAggregator, ISubscriber, IEvent, EventType,
+} from 'scripts/types';
 
 export default class EventAggregator implements IEventAggregator {
-  private subscribers: Map<MyEvent, ISubscriber[]> = new Map<MyEvent, ISubscriber[]>();
+  private subscribers: Map<EventType, ISubscriber[]> = new Map<EventType, ISubscriber[]>();
 
-  AddSubscriber(event: MyEvent, subscriber: ISubscriber): void {
+  AddSubscriber(event: EventType, subscriber: ISubscriber): void {
     if (this.subscribers.has(event) === false) {
       this.subscribers.set(event, []);
     }
@@ -14,7 +16,7 @@ export default class EventAggregator implements IEventAggregator {
     }
   }
 
-  RemoveSubscriber(event: MyEvent, subscriber: ISubscriber): void {
+  RemoveSubscriber(event: EventType, subscriber: ISubscriber): void {
     if (this.subscribers.has(event)) {
       const currentSubscribers = this.subscribers.get(event);
       if (currentSubscribers) {
@@ -26,9 +28,9 @@ export default class EventAggregator implements IEventAggregator {
     }
   }
 
-  Publish(event: MyEvent): void {
-    if (this.subscribers.has(event)) {
-      const currentSubscribers = this.subscribers.get(event);
+  Publish(event: IEvent): void {
+    if (this.subscribers.has(event.eventType)) {
+      const currentSubscribers = this.subscribers.get(event.eventType);
       if (currentSubscribers) {
         currentSubscribers.forEach((subscriber) => {
           subscriber.Handle(event);

@@ -1,10 +1,10 @@
 import { io } from 'socket.io-client';
-import GameBoard from './gameBoard';
+import Game from 'scripts/game';
 
 const socket = io();
 
 document.addEventListener('DOMContentLoaded', () => {
-  const gameBoard = new GameBoard();
+  const game = new Game();
 
   console.log('Hello world');
 });

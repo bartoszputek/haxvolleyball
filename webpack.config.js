@@ -4,7 +4,10 @@ module.exports = {
   entry: './src/scripts/script.ts',
   mode: 'development',
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    alias: {
+      scripts: path.resolve(__dirname, 'src', 'scripts'),
+    },
+    extensions: ['.js', '.jsx', '.ts', '.tsx', ''],
   },
   module: {
     rules: [

@@ -1,7 +1,7 @@
-import GameBoard from 'scripts/gameBoard';
-import GameController from 'scripts/gameController';
-import EventAggregator from 'scripts/eventAggregator';
-import { EventType } from 'scripts/types';
+import GameBoard from 'frontend/gameBoard';
+import GameController from 'frontend/gameController';
+import EventAggregator from 'frontend/eventAggregator';
+import { EventType } from 'shared/types';
 import MovePlayer from './subscribers/movePlayer';
 import StopPlayer from './subscribers/stopPlayer';
 

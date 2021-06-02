@@ -1,5 +1,5 @@
-import Player from 'scripts/player';
-import { EventType, IEvent, Vector } from 'scripts/types';
+import Player from 'shared/components/player';
+import { EventType, IEvent, Vector } from 'shared/types';
 
 export default class ControlButtonPressed implements IEvent {
   readonly eventType = EventType.KeyPressed;

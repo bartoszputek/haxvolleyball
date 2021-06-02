@@ -1,6 +1,6 @@
 import {
   IEventAggregator, ISubscriber, IEvent, EventType,
-} from 'scripts/types';
+} from 'shared/types';
 
 export default class EventAggregator implements IEventAggregator {
   private subscribers: Map<EventType, ISubscriber[]> = new Map<EventType, ISubscriber[]>();

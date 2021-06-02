@@ -1,6 +1,7 @@
 {
-    "extends": "./tsconfig.json",
-    "exclude": [
-      "./src/scripts"
-    ]
-  }
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "src/frontend",
+    "src/tests"
+  ]
+}

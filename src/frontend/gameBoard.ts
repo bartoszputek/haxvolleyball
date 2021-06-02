@@ -1,7 +1,7 @@
-import Globals from 'scripts/globals';
-import { Team } from 'scripts/types';
-import Player from 'scripts/player';
-import GameController from 'scripts/gameController';
+import Globals from 'shared/globals';
+import { Team } from 'shared/types';
+import Player from 'shared/components/player';
+import GameController from 'frontend/gameController';
 
 export default class GameBoard {
   private gameController: GameController;
@@ -14,15 +14,15 @@ export default class GameBoard {
     this.gameController = gameController;
     this.element = <HTMLCanvasElement>document.getElementById(Globals.CANVAS_CONTAINER_NAME);
     this.context = <CanvasRenderingContext2D>this.element.getContext('2d');
-    // console.log(this.element);
+    this.element.width = Globals.CANVAS_WIDTH;
+    this.element.height = Globals.CANVAS_HEIGHT;
   }
 
   draw():void {
     window.requestAnimationFrame(() => this.draw());
     this.eraseCanvas();
-
+    this.gameController.updatePlayers();
     this.gameController.getPlayers().forEach((player) => {
-      player.updatePosition();
       this.drawPlayer(player);
     });
   }
@@ -31,7 +31,7 @@ export default class GameBoard {
     this.context.lineWidth = 2;
     this.context.strokeStyle = 'black';
     this.context.beginPath();
-    this.context.arc(player.x, player.y, 20, 0, 2 * Math.PI);
+    this.context.arc(player.x.value, player.y.value, Globals.PLAYER_RADIUS, 0, 2 * Math.PI);
     if (player.team === Team.Blue) {
       this.context.fillStyle = Globals.COLOR_BLUE_TEAM;
     }

@@ -1,18 +1,30 @@
-import EventAggregator from 'scripts/eventAggregator';
-import ControlButtonPressed from 'scripts/events/controlButtonPressed';
-import Player from 'scripts/player';
-import { Key, Team, Vector } from 'scripts/types';
+import EventAggregator from 'frontend/eventAggregator';
+import ControlButtonPressed from 'frontend/events/controlButtonPressed';
+import Player from 'shared/components/player';
+import { Key, Team, Vector } from 'shared/types';
+import { io } from 'socket.io-client';
 import ControlButtonUp from './events/controlButtonUp';
 
 export default class GameController {
+  private socket = io();
+
   private eventAggregator: EventAggregator;
 
   private players: Player[] = [];
 
   constructor(eventAggregator: EventAggregator) {
-    this.players.push(new Player(100, 120, Team.Red));
+    this.socket.emit('startGame');
+    // this.socket.on('get', (arg) => {
+    //   console.log(arg);
+    //   // this.players.push(new Player(arg));
+    //   this.players.push(new Player('1', 120, 150, Team.Red));
+    // });
+
+    this.players.push(new Player('1', 120, 150, Team.Red));
+
     this.eventAggregator = eventAggregator;
     this.setupListeners();
+    this.setupSocket();
   }
 
   private setupListeners(): void {
@@ -55,7 +67,18 @@ export default class GameController {
     });
   }
 
+  private setupSocket() {
+    this.socket.on('dwa', () => {
+      // this.players[0] = new Player(arg);
+    });
+  }
+
   getPlayers(): Player[] {
     return this.players;
+  }
+
+  updatePlayers(): void {
+    this.players[0].updatePosition();
+    this.socket.emit('siedem');
   }
 }

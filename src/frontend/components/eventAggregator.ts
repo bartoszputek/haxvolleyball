@@ -1,11 +1,12 @@
 import {
-  IEventAggregator, ISubscriber, IEvent, EventType,
+  IEvent, EventType, SubscriberCallback,
 } from 'shared/types';
 
-export default class EventAggregator implements IEventAggregator {
-  private subscribers: Map<EventType, ISubscriber[]> = new Map<EventType, ISubscriber[]>();
+export default class EventNew {
+  private subscribers: Map<EventType, SubscriberCallback[]> = new Map
+  <EventType, SubscriberCallback[]>();
 
-  AddSubscriber(event: EventType, subscriber: ISubscriber): void {
+  AddSubscriber(event: EventType, subscriber: SubscriberCallback): void {
     if (this.subscribers.has(event) === false) {
       this.subscribers.set(event, []);
     }
@@ -16,7 +17,7 @@ export default class EventAggregator implements IEventAggregator {
     }
   }
 
-  RemoveSubscriber(event: EventType, subscriber: ISubscriber): void {
+  RemoveSubscriber(event: EventType, subscriber: SubscriberCallback): void {
     if (this.subscribers.has(event)) {
       const currentSubscribers = this.subscribers.get(event);
       if (currentSubscribers) {
@@ -33,7 +34,7 @@ export default class EventAggregator implements IEventAggregator {
       const currentSubscribers = this.subscribers.get(event.eventType);
       if (currentSubscribers) {
         currentSubscribers.forEach((subscriber) => {
-          subscriber.Handle(event);
+          subscriber(event);
         });
       }
     }

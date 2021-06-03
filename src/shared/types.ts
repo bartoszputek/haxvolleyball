@@ -5,10 +5,6 @@ export enum Team {
   Red,
 }
 
-export interface ISubscriber {
-  Handle(Notify: IEvent): void;
-}
-
 export enum Key{
   Right = 'ArrowRight',
   Up = 'ArrowUp',
@@ -21,17 +17,25 @@ export type Vector = {
   orientation: number;
 };
 
+export interface ISubscriber {
+  Handle(Notify: IEvent): void;
+}
+
 export enum EventType {
   'KeyPressed',
   'KeyUp',
+  'GenerateLocalFrame',
+  'ReceivedServerFrame',
 }
 
 export interface IEvent {
   readonly eventType: EventType;
 }
 
+export type SubscriberCallback = (arg: IEvent) => void;
+
 export interface IEventAggregator {
-  AddSubscriber(event: EventType, subscriber: ISubscriber): void;
-  RemoveSubscriber(event: EventType, subscriber: ISubscriber): void;
+  AddSubscriber(event: EventType, subscriber: SubscriberCallback): void;
+  RemoveSubscriber(event: EventType, subscriber: SubscriberCallback): void;
   Publish(event: IEvent): void;
 }

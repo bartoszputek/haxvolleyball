@@ -45,12 +45,14 @@ io.on('connection', (socket: Socket) => {
     // });
   });
 
-  socket.on('siedem', () => {
-    // if (players[0]) {
-    //   const t = players[0].parse();
-    //   // console.log(t);
-    //   socket.emit('dwa', t);
-    // }
+  socket.on('test', () => {
+    // console.log('frame generating');
+    socket.emit('hello', 'world');
+  });
+
+  socket.on('generateFrame', () => {
+    console.log('frame generating');
+    socket.emit('eska', 1);
   });
 });
 

@@ -1,30 +1,17 @@
 import Globals from 'shared/globals';
 import { Team } from 'shared/types';
 import Player from 'shared/components/player';
-import GameController from 'frontend/gameController';
 
 export default class GameBoard {
-  private gameController: GameController;
-
   private element: HTMLCanvasElement;
 
   private context: CanvasRenderingContext2D;
 
-  constructor(gameController: GameController) {
-    this.gameController = gameController;
+  constructor() {
     this.element = <HTMLCanvasElement>document.getElementById(Globals.CANVAS_CONTAINER_NAME);
     this.context = <CanvasRenderingContext2D>this.element.getContext('2d');
     this.element.width = Globals.CANVAS_WIDTH;
     this.element.height = Globals.CANVAS_HEIGHT;
-  }
-
-  draw():void {
-    window.requestAnimationFrame(() => this.draw());
-    this.eraseCanvas();
-    this.gameController.updatePlayers();
-    this.gameController.getPlayers().forEach((player) => {
-      this.drawPlayer(player);
-    });
   }
 
   drawPlayer(player: Player): void {

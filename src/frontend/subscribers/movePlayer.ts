@@ -1,7 +1,7 @@
 import ControlButtonPressed from 'frontend/events/controlButtonPressed';
 import { SubscriberCallback } from 'shared/types';
 
-export default <SubscriberCallback> function movePlayer(arg: ControlButtonPressed):void {
-  // this.socket.emit('move', Notify.player, Notify.vector);
-  arg.player.move(arg.vector);
+export default <SubscriberCallback> function movePlayer(notify: ControlButtonPressed):void {
+  notify.socket.emit('playerMove', notify.roomId, notify.vector);
+  notify.player.move(notify.vector);
 };

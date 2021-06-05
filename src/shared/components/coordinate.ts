@@ -1,18 +1,21 @@
 export default class Coordinate {
   value: number;
 
-  delta: number = 0;
-
-  private vmax: number = 0;
-
-  private orientation: number = 0;
+  private vmax: number;
 
   private acceleration: number;
 
-  constructor(value: number, vmax: number, acceleration: number) {
+  private orientation: number;
+
+  delta: number = 0;
+
+  constructor(value: number, vmax: number,
+    acceleration: number, orientation: number, delta: number) {
     this.value = value;
     this.vmax = vmax;
     this.acceleration = acceleration;
+    this.orientation = orientation;
+    this.delta = delta;
   }
 
   getOrientation(): number {

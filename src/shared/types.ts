@@ -26,6 +26,7 @@ export enum EventType {
   'KeyUp',
   'GenerateLocalFrame',
   'ReceivedServerFrame',
+  'GameStarted',
 }
 
 export interface IEvent {
@@ -39,3 +40,22 @@ export interface IEventAggregator {
   RemoveSubscriber(event: EventType, subscriber: SubscriberCallback): void;
   Publish(event: IEvent): void;
 }
+
+export type SerializedGameState = {
+  players:SerializedPlayer[]
+};
+
+export type SerializedPlayer = {
+  id:string;
+  x:SerializedCoordinate;
+  y:SerializedCoordinate;
+  team:Team;
+};
+
+export type SerializedCoordinate = {
+  value: number;
+  delta: number;
+  vmax: number;
+  orientation: number;
+  acceleration: number;
+};

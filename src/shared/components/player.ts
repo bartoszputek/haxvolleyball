@@ -11,10 +11,10 @@ export default class Player {
 
   team:Team;
 
-  constructor(id:string, x:number, y:number, team:Team) {
+  constructor(id:string, x:Coordinate, y:Coordinate, team:Team) {
     this.id = id;
-    this.x = new Coordinate(x, Globals.PLAYER_VMAX, Globals.PLAYER_ACCELERATION);
-    this.y = new Coordinate(y, Globals.PLAYER_VMAX, Globals.PLAYER_ACCELERATION);
+    this.x = x;
+    this.y = y;
     this.team = team;
   }
 
@@ -61,14 +61,5 @@ export default class Player {
     } else {
       this.y.value += this.y.delta;
     }
-  }
-
-  parse():object {
-    return {
-      id: this.id,
-      x: this.x.value,
-      y: this.y.value,
-      team: this.team,
-    };
   }
 }

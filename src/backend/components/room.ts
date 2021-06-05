@@ -1,7 +1,20 @@
-export default class Room {
-  private id:number;
+import GameState from 'shared/components/gameState';
 
-  constructor(id:number) {
+export default class Room {
+  private id:string;
+
+  private gameState: GameState;
+
+  constructor(id:string, gameState: GameState) {
     this.id = id;
+    this.gameState = gameState;
+  }
+
+  getId(): string {
+    return this.id;
+  }
+
+  getGameState(): GameState {
+    return this.gameState;
   }
 }

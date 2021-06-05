@@ -1,62 +1,54 @@
-import { mocked } from 'ts-jest/utils';
-import EventAggregator from 'scripts/eventAggregator';
-import ControlButtonPressed from 'scripts/events/controlButtonPressed';
-import { EventType } from 'scripts/types';
-import MovePlayer from 'scripts/subscribers/movePlayer';
-import GameController from 'scripts/gameController';
-import Player from 'scripts/player';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable max-classes-per-file */
+import EventAggregator from 'frontend/components/eventAggregator';
+import {
+  EventType, IEvent, SubscriberCallback,
+} from 'shared/types';
 
-jest.mock('scripts/playerSubscriber');
-const mockedPlayerSubscriber = mocked(MovePlayer, true);
+class TestEvent1 implements IEvent {
+  readonly eventType: EventType = 1;
+}
+
+class TestEvent2 implements IEvent {
+  readonly eventType: EventType = 2;
+}
+
+const callback = (arg: IEvent) => ({}) as SubscriberCallback;
+const testCallback1 = jest.fn(() => callback);
+const testCallback2 = jest.fn(() => callback);
 
 beforeEach(() => {
-  mocked(MovePlayer, true).mockClear();
+  testCallback1.mockClear();
+  testCallback2.mockClear();
 });
 
 test('Add subscribers and handle them', () => {
   const ea: EventAggregator = new EventAggregator();
-  const ps1 = new MovePlayer();
-  const ps2 = new MovePlayer();
-  const cbp = new ControlButtonPressed('ArrowLeft');
-  const instancePs1 = mockedPlayerSubscriber.mock.instances[0].Handle;
-  const instancePs2 = mockedPlayerSubscriber.mock.instances[1].Handle;
+  const event1 = new TestEvent1();
+  const eventType1 = event1.eventType;
+  const event2 = new TestEvent2();
+  const eventType2 = event2.eventType;
 
-  ea.AddSubscriber(EventType.KeyPressed, ps1);
-  ea.AddSubscriber(EventType.KeyPressed, ps2);
-  ea.Publish(cbp);
+  ea.AddSubscriber(eventType1, testCallback1);
+  ea.AddSubscriber(eventType1, testCallback1);
+  ea.AddSubscriber(eventType2, testCallback1);
+  ea.AddSubscriber(eventType1, testCallback2);
+  ea.Publish(event1);
 
-  expect(instancePs1).toHaveBeenCalledTimes(1);
-  expect(instancePs2).toHaveBeenCalledTimes(1);
+  expect(testCallback1).toHaveBeenCalledTimes(2);
+  expect(testCallback2).toHaveBeenCalledTimes(1);
 });
 
 test('Add/remove subscribers and handle them', () => {
   const ea: EventAggregator = new EventAggregator();
-  const ps1 = new MovePlayer();
-  const ps2 = new MovePlayer();
-  const ps3 = new MovePlayer();
-  const ps4 = new MovePlayer();
-  const cbp = new ControlButtonPressed('ArrowLeft');
-  const instancePs1 = mockedPlayerSubscriber.mock.instances[0].Handle;
-  const instancePs2 = mockedPlayerSubscriber.mock.instances[1].Handle;
-  const instancePs3 = mockedPlayerSubscriber.mock.instances[2].Handle;
-  const instancePs4 = mockedPlayerSubscriber.mock.instances[3].Handle;
+  const event = new TestEvent1();
+  const { eventType } = event;
 
-  ea.AddSubscriber(EventType.KeyPressed, ps1);
-  ea.AddSubscriber(EventType.KeyPressed, ps1);
-  ea.AddSubscriber(EventType.KeyPressed, ps2);
-  ea.AddSubscriber(EventType.KeyPressed, ps3);
-  ea.RemoveSubscriber(EventType.KeyPressed, ps2);
-  ea.RemoveSubscriber(EventType.KeyPressed, ps4);
+  ea.AddSubscriber(eventType, testCallback1);
+  ea.RemoveSubscriber(eventType, testCallback1);
+  ea.AddSubscriber(eventType, testCallback2);
+  ea.Publish(event);
 
-  expect(instancePs1).toHaveBeenCalledTimes(0);
-  expect(instancePs2).toHaveBeenCalledTimes(0);
-  expect(instancePs3).toHaveBeenCalledTimes(0);
-  expect(instancePs4).toHaveBeenCalledTimes(0);
-
-  ea.Publish(cbp);
-
-  expect(instancePs1).toHaveBeenCalledTimes(2);
-  expect(instancePs2).toHaveBeenCalledTimes(0);
-  expect(instancePs3).toHaveBeenCalledTimes(1);
-  expect(instancePs4).toHaveBeenCalledTimes(0);
+  expect(testCallback1).toHaveBeenCalledTimes(0);
+  expect(testCallback2).toHaveBeenCalledTimes(1);
 });

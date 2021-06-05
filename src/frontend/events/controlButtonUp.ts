@@ -11,9 +11,9 @@ export default class ControlButtonUp implements IEvent {
 
   socket: Socket;
 
-  constructor(vector: Vector, player: Player, socket: Socket) {
-    this.vector = vector;
-    this.player = player;
-    this.socket = socket;
+  constructor(args:{ vector: Vector, player: Player, socket: Socket }) {
+    this.vector = args.vector;
+    this.player = args.player;
+    this.socket = args.socket;
   }
 }

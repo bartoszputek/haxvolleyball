@@ -45,54 +45,86 @@ export default class GameController {
   private setupListeners(): void {
     document.addEventListener('keydown', (e) => {
       if (e.key === Key.Right) {
-        const vector:Vector = { direction: 'x', orientation: 1 };
+        const args = {
+          vector: { direction: 'x', orientation: 1 },
+          player: this.gameState.getPlayers()[0],
+          socket: this.socket,
+        };
         this.eventAggregator.Publish(
-          new ControlButtonPressed(vector, this.gameState.getPlayers()[0], this.socket),
+          new ControlButtonPressed(args),
         );
       }
       if (e.key === Key.Up) {
-        const vector:Vector = { direction: 'y', orientation: -1 };
+        const args = {
+          vector: { direction: 'y', orientation: -1 },
+          player: this.gameState.getPlayers()[0],
+          socket: this.socket,
+        };
         this.eventAggregator.Publish(
-          new ControlButtonPressed(vector, this.gameState.getPlayers()[0], this.socket),
+          new ControlButtonPressed(args),
         );
       }
       if (e.key === Key.Left) {
-        const vector:Vector = { direction: 'x', orientation: -1 };
+        const args = {
+          vector: { direction: 'x', orientation: -1 },
+          player: this.gameState.getPlayers()[0],
+          socket: this.socket,
+        };
         this.eventAggregator.Publish(
-          new ControlButtonPressed(vector, this.gameState.getPlayers()[0], this.socket),
+          new ControlButtonPressed(args),
         );
       }
       if (e.key === Key.Down) {
-        const vector:Vector = { direction: 'y', orientation: 1 };
+        const args = {
+          vector: { direction: 'y', orientation: 1 },
+          player: this.gameState.getPlayers()[0],
+          socket: this.socket,
+        };
         this.eventAggregator.Publish(
-          new ControlButtonPressed(vector, this.gameState.getPlayers()[0], this.socket),
+          new ControlButtonPressed(args),
         );
       }
     });
 
     document.addEventListener('keyup', (e) => {
       if (e.key === Key.Right) {
-        const vector:Vector = { direction: 'x', orientation: 1 };
+        const args = {
+          vector: { direction: 'x', orientation: 1 },
+          player: this.gameState.getPlayers()[0],
+          socket: this.socket,
+        };
         this.eventAggregator.Publish(
-          new ControlButtonUp(vector, this.gameState.getPlayers()[0], this.socket),
+          new ControlButtonUp(args),
         );
       }
       if (e.key === Key.Up) {
-        const vector:Vector = { direction: 'y', orientation: -1 };
+        const args = {
+          vector: { direction: 'y', orientation: -1 },
+          player: this.gameState.getPlayers()[0],
+          socket: this.socket,
+        };
         this.eventAggregator.Publish(
-          new ControlButtonUp(vector, this.gameState.getPlayers()[0], this.socket),
+          new ControlButtonUp(args),
         );
       }
       if (e.key === Key.Left) {
-        const vector:Vector = { direction: 'x', orientation: -1 };
+        const args = {
+          vector: { direction: 'x', orientation: -1 },
+          player: this.gameState.getPlayers()[0],
+          socket: this.socket,
+        };
         this.eventAggregator.Publish(
-          new ControlButtonUp(vector, this.gameState.getPlayers()[0], this.socket),
+          new ControlButtonUp(args),
         );
       }
       if (e.key === Key.Down) {
-        const vector:Vector = { direction: 'y', orientation: 1 };
+        const args = {
+          vector: { direction: 'y', orientation: 1 },
+          player: this.gameState.getPlayers()[0],
+          socket: this.socket,
+        };
         this.eventAggregator.Publish(
-          new ControlButtonUp(vector, this.gameState.getPlayers()[0], this.socket),
+          new ControlButtonUp(args),
         );
       }
     });

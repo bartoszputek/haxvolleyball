@@ -5,15 +5,22 @@ import { Socket } from 'socket.io-client';
 export default class ControlButtonUp implements IEvent {
   readonly eventType = EventType.KeyUp;
 
+  socket: Socket;
+
+  roomId: string;
+
   vector: Vector;
 
   player: Player;
 
-  socket: Socket;
+  timestamp: number;
 
-  constructor(args:{ vector: Vector, player: Player, socket: Socket }) {
+  constructor(args:{ socket: Socket, roomId: string, vector: Vector,
+    player: Player, timestamp: number }) {
+    this.socket = args.socket;
+    this.roomId = args.roomId;
     this.vector = args.vector;
     this.player = args.player;
-    this.socket = args.socket;
+    this.timestamp = args.timestamp;
   }
 }

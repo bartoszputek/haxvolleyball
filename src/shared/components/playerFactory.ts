@@ -2,7 +2,7 @@ import Player from 'shared/components/player';
 import { SerializedPlayer, Team } from 'shared/types';
 import CoordinateFactory from './coordinateFactory';
 
-export default class GameStateFactory {
+export default class PlayerFactory {
   static createHostPlayer(hostId: string): Player {
     const [x, y] = CoordinateFactory.createRedCoordinates();
     const player = new Player(hostId, x, y, Team.Red);

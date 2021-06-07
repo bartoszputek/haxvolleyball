@@ -3,9 +3,10 @@ import http from 'http';
 import path from 'path';
 import { Socket } from 'socket.io';
 import Room from 'backend/components/room';
-import GameState from 'shared/components/gameState';
-import { SerializedGameState, Vector } from 'shared/types';
-import GameStateFactory from 'shared/components/gameStateFactory';
+import startGame from 'backend/listeners/startGame';
+import movePlayer from 'backend/listeners/movePlayer';
+import stopPlayer from 'backend/listeners/stopPlayer';
+import generateFrame from 'backend/listeners/generateFrame';
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -21,34 +22,14 @@ const io = require('socket.io')(httpServer, options);
 
 const rooms: Room[] = [];
 
-io.on('connection', (socket: Socket) => {
-  socket.on('startGame', (serializedGameState: SerializedGameState) => {
-    const gameState = GameStateFactory.deserializeGameState(serializedGameState);
-    rooms.push(new Room(socket.id, gameState));
-  });
+const onConnection = (socket: Socket) => {
+  startGame(socket, rooms);
+  movePlayer(socket, rooms);
+  stopPlayer(socket, rooms);
+  generateFrame(socket, rooms);
+};
 
-  socket.on('playerMove', (roomId: string, vector:Vector) => {
-    const selectedRoom = rooms.find((room) => room.getId() === roomId);
-    if (selectedRoom) {
-      const selectedPlayer = selectedRoom.getGameState().getPlayers()
-        .find((player) => player.id === socket.id);
-      if (selectedPlayer) {
-        console.log(selectedPlayer);
-        selectedPlayer.move(vector);
-      } else {
-        console.log('The player doesn\'t exist in this room');
-      }
-    } else {
-      console.log('The room no longer/never exist!');
-    }
-    socket.emit('hello', 'world');
-  });
-
-  socket.on('generateFrame', () => {
-    // console.log('frame generating');
-    socket.emit('eska', 1);
-  });
-});
+io.on('connection', onConnection);
 
 httpServer.listen(8080);
 

@@ -7,7 +7,7 @@ export default class Coordinate {
 
   private orientation: number;
 
-  delta: number = 0;
+  delta: number;
 
   constructor(value: number, vmax: number,
     acceleration: number, orientation: number, delta: number) {

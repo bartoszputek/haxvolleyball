@@ -1,6 +1,6 @@
-import ReceivedServerFrame from 'frontend/events/receivedServerFrame';
+import GenerateLocalFrame from 'frontend/events/generateLocalFrame';
 import { SubscriberCallback } from 'shared/types';
 
-export default <SubscriberCallback> function requestServerFrame(arg: ReceivedServerFrame):void {
-  arg.socket.emit('generateFrame');
+export default <SubscriberCallback> function requestServerFrame(notify: GenerateLocalFrame):void {
+  notify.socket.emit('requestServerFrame', notify.roomId, notify.timestamp);
 };

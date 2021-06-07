@@ -18,6 +18,20 @@ export default class Player {
     this.team = team;
   }
 
+  isMoving(vector: Vector): boolean {
+    if (vector.direction === 'x') {
+      if (vector.orientation !== this.x.getOrientation()) {
+        return true;
+      }
+    }
+    if (vector.direction === 'y') {
+      if (vector.orientation !== this.y.getOrientation()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   move(vector: Vector): void {
     if (vector.direction === 'x') {
       this.x.setOrientation(vector.orientation * 1);

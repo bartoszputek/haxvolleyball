@@ -6,7 +6,13 @@ export default class GenerateLocalFrame implements IEvent {
 
   socket: Socket;
 
-  constructor(socket: Socket) {
-    this.socket = socket;
+  roomId: string;
+
+  timestamp: number;
+
+  constructor(args:{ socket: Socket, roomId: string, timestamp: number }) {
+    this.socket = args.socket;
+    this.roomId = args.roomId;
+    this.timestamp = args.timestamp;
   }
 }

@@ -7,6 +7,7 @@ import startGame from 'backend/listeners/startGame';
 import movePlayer from 'backend/listeners/movePlayer';
 import stopPlayer from 'backend/listeners/stopPlayer';
 import generateFrame from 'backend/listeners/generateFrame';
+import joinGame from 'backend/listeners/joinGame';
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -24,6 +25,7 @@ const rooms: Room[] = [];
 
 const onConnection = (socket: Socket) => {
   startGame(socket, rooms);
+  joinGame(socket, rooms, io);
   movePlayer(socket, rooms);
   stopPlayer(socket, rooms);
   generateFrame(socket, rooms);

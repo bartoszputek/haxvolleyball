@@ -11,7 +11,12 @@ export default class Game {
     this.gameController = new GameController(this.gameBoard);
   }
 
-  start(): void {
-    this.gameController.startGame();
+  async start(): Promise<string> {
+    const roomId = await this.gameController.startGame();
+    return roomId;
+  }
+
+  join(roomId: string): void {
+    this.gameController.joinGame(roomId);
   }
 }

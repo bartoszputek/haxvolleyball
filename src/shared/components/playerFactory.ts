@@ -10,6 +10,13 @@ export default class PlayerFactory {
     return player;
   }
 
+  static createJoinPlayer(joinerId: string): Player {
+    const [x, y] = CoordinateFactory.createBlueCoordinates();
+    const player = new Player(joinerId, x, y, Team.Blue);
+
+    return player;
+  }
+
   static deserializePlayer(serializedPlayer: SerializedPlayer): Player {
     const x = CoordinateFactory.deserializeCoordinates(serializedPlayer.x);
     const y = CoordinateFactory.deserializeCoordinates(serializedPlayer.y);

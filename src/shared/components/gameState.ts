@@ -10,4 +10,8 @@ export default class GameState {
   getPlayers(): Player[] {
     return this.players;
   }
+
+  addPlayer(player: Player): void {
+    this.players.push(player);
+  }
 }

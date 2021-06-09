@@ -27,6 +27,7 @@ export enum EventType {
   'GenerateLocalFrame',
   'ReceivedServerFrame',
   'GameStarted',
+  'JoiningGame',
 }
 
 export interface IEvent {

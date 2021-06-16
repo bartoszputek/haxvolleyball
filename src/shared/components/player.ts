@@ -1,4 +1,4 @@
-import { Team, Vector } from 'shared/types';
+import { PlayerAction, Team, Vector } from 'shared/types';
 import Globals from 'shared/globals';
 import Coordinate from 'shared/components/coordinate';
 
@@ -11,7 +11,7 @@ export default class Player {
 
   team:Team;
 
-  actionQueue:any[] = [];
+  queue:[PlayerAction, Vector][] = [];
 
   constructor(id:string, x:Coordinate, y:Coordinate, team:Team) {
     this.id = id;
@@ -35,7 +35,7 @@ export default class Player {
   }
 
   move(vector: Vector): void {
-    this.actionQueue.push(() => this.moveAction(vector));
+    this.queue.push([PlayerAction.Move, vector]);
   }
 
   private moveAction(vector: Vector): void {
@@ -48,7 +48,7 @@ export default class Player {
   }
 
   stop(vector: Vector): void {
-    this.actionQueue.push(() => this.stopAction(vector));
+    this.queue.push([PlayerAction.Stop, vector]);
   }
 
   private stopAction(vector: Vector): void {
@@ -64,12 +64,10 @@ export default class Player {
     }
   }
 
-  updatePosition(deltaTime: number) {
-    while (this.actionQueue.length > 0) {
-      const action = this.actionQueue.pop();
-      action();
-    }
-    let distance = this.x.getOrientation() * 0.3 * deltaTime;
+  updatePosition() {
+    this.handleActions();
+    const delta = Globals.TIME_STEP;
+    let distance = Math.round(this.x.getOrientation() * 0.3 * delta);
     if (distance + this.x.value + Globals.PLAYER_RADIUS > Globals.CANVAS_WIDTH) {
       this.x.value = Globals.CANVAS_WIDTH - Globals.PLAYER_RADIUS;
     } else if (distance + this.x.value < Globals.PLAYER_RADIUS) {
@@ -78,7 +76,7 @@ export default class Player {
       this.x.value += distance;
     }
 
-    distance = this.y.getOrientation() * 0.3 * deltaTime;
+    distance = Math.round(this.y.getOrientation() * 0.3 * delta);
     if (distance + this.y.value + Globals.PLAYER_RADIUS > Globals.CANVAS_HEIGHT) {
       this.y.value = Globals.CANVAS_HEIGHT - Globals.PLAYER_RADIUS;
     } else if (distance + this.y.value < Globals.PLAYER_RADIUS) {
@@ -86,5 +84,17 @@ export default class Player {
     } else {
       this.y.value += distance;
     }
+  }
+
+  private handleActions() {
+    this.queue.forEach((action) => {
+      if (action[0] === PlayerAction.Move) {
+        this.moveAction(action[1]);
+      }
+      if (action[0] === PlayerAction.Stop) {
+        this.stopAction(action[1]);
+      }
+    });
+    this.queue = [];
   }
 }

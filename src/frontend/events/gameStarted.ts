@@ -6,10 +6,7 @@ export default class GameStarted implements IEvent {
 
   socket: Socket;
 
-  timestamp: number;
-
-  constructor(args:{ socket: Socket, timestamp:number }) {
+  constructor(args:{ socket: Socket }) {
     this.socket = args.socket;
-    this.timestamp = args.timestamp;
   }
 }

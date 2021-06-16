@@ -16,18 +16,14 @@ export default class ControlButtonUp implements IEvent {
 
   player: Player;
 
-  timestamp: number;
-
   cb: any;
 
   constructor(args:{ socket: Socket, roomId: string, vector: Vector,
-    gameState: GameState, player: Player, timestamp: number, cb: any }) {
+    gameState: GameState, player: Player }) {
     this.socket = args.socket;
     this.roomId = args.roomId;
     this.vector = args.vector;
     this.gameState = args.gameState;
     this.player = args.player;
-    this.timestamp = args.timestamp;
-    this.cb = args.cb;
   }
 }

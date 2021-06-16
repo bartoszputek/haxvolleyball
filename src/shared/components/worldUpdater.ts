@@ -4,13 +4,13 @@ import Player from 'shared/components/player';
 export default class WorldUdpater {
   gameState!: GameState;
 
-  updateWorld(delta: number) {
-    this.updatePlayers(delta);
+  updateWorld() {
+    this.updatePlayers();
   }
 
-  private updatePlayers(delta: number): void {
+  private updatePlayers(): void {
     this.gameState.getPlayers().forEach((player: Player) => {
-      player.updatePosition(delta);
+      player.updatePosition();
     });
   }
 }

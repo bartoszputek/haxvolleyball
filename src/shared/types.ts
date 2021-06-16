@@ -5,6 +5,11 @@ export enum Team {
   Red,
 }
 
+export enum PlayerAction {
+  Move,
+  Stop,
+}
+
 export enum Key{
   Right = 'ArrowRight',
   Up = 'ArrowUp',

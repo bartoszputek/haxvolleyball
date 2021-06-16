@@ -1,6 +1,8 @@
 import EventAggregator from 'frontend/components/eventAggregator';
 import ControlButtonPressed from 'frontend/events/controlButtonPressed';
-import { EventType, Key, SerializedGameState } from 'shared/types';
+import {
+  EventType, Key, SerializedGameState, SerializedPlayer,
+} from 'shared/types';
 import { io } from 'socket.io-client';
 import ControlButtonUp from 'frontend/events/controlButtonUp';
 import GameBoard from 'frontend/components/gameBoard';
@@ -8,14 +10,11 @@ import GameState from 'shared/components/gameState';
 import Player from 'shared/components/player';
 import movePlayer from 'frontend/subscribers/movePlayer';
 import stopPlayer from 'frontend/subscribers/stopPlayer';
-import requestServerFrame from 'frontend/subscribers/requestServerFrame';
 import startGame from 'frontend/subscribers/startGame';
 import GameStarted from 'frontend/events/gameStarted';
 import GameStateFactory from 'shared/components/gameStateFactory';
-import GenerateLocalFrame from 'frontend/events/generateLocalFrame';
 import joinGame from 'frontend/subscribers/joinGame';
 import JoiningGame from 'frontend/events/joiningGame';
-import Globals from 'shared/globals';
 import WorldUpdater from 'shared/components/worldUpdater';
 
 export default class GameController {
@@ -35,9 +34,7 @@ export default class GameController {
 
   private worldUpdater: WorldUpdater;
 
-  private frameCounter: number = 0;
-
-  private delta: number = 0;
+  private tickCounter: number = 1;
 
   private lastFrameTimeMs: number = 0;
 
@@ -59,13 +56,12 @@ export default class GameController {
         this.gameState = GameStateFactory.createNewGameState(this.roomId);
         this.worldUpdater.gameState = this.gameState;
         this.ownPlayer = this.gameState.getPlayers()[0];
-        this.frameCounter += 1;
-        this.emittedGameStates.set(this.frameCounter, JSON.stringify(this.gameState));
+
         const args = {
           socket: this.socket,
-          timestamp: this.frameCounter,
         };
         this.eventAggregator.Publish(new GameStarted(args));
+
         requestAnimationFrame((timestamp: number) => this.generateFrame(timestamp));
 
         resolve(this.roomId);
@@ -75,11 +71,9 @@ export default class GameController {
 
   joinGame(roomId: string):void {
     this.socket.on('connect', () => {
-      this.frameCounter += 1;
       const args = {
         socket: this.socket,
         roomId,
-        timestamp: this.frameCounter,
       };
       this.eventAggregator.Publish(new JoiningGame(args));
     });
@@ -87,27 +81,6 @@ export default class GameController {
 
   generateFrame(timestamp: number): void {
     requestAnimationFrame((newTimestamp: number) => this.generateFrame(newTimestamp));
-
-    const publishEvent = () => {
-      const args = {
-        socket: this.socket,
-        roomId: this.roomId,
-        timestamp: this.frameCounter,
-      };
-      this.eventAggregator.Publish(new GenerateLocalFrame(args));
-    };
-
-    this.delta += timestamp - this.lastFrameTimeMs;
-    this.lastFrameTimeMs = timestamp;
-
-    while (this.delta >= Globals.TIME_STEP) {
-      this.frameCounter += 1;
-      // console.log('UPDATE', this.frameCounter, this.gameState.getPlayers()[0].x, this.gameState.getPlayers()[0].y);
-      this.worldUpdater.updateWorld(Globals.TIME_STEP);
-      this.emittedGameStates.set(this.frameCounter, JSON.stringify(this.gameState));
-      publishEvent();
-      this.delta -= Globals.TIME_STEP;
-    }
 
     this.gameBoard.eraseCanvas();
     this.drawPlayers();
@@ -121,17 +94,12 @@ export default class GameController {
 
   private setupListeners(): void {
     document.addEventListener('keydown', (e) => {
-      this.frameCounter += 1;
       const args = {
         socket: this.socket,
         roomId: this.roomId,
         vector: { direction: 'x', orientation: 1 },
         gameState: this.gameState,
         player: this.ownPlayer,
-        timestamp: this.frameCounter,
-        cb: (timestamp: number, gameState: GameState) => {
-          this.emittedGameStates.set(timestamp, JSON.stringify(gameState));
-        },
       };
       if (e.key === Key.Right) {
         this.eventAggregator.Publish(
@@ -159,17 +127,12 @@ export default class GameController {
     });
 
     document.addEventListener('keyup', (e) => {
-      this.frameCounter += 1;
       const args = {
         socket: this.socket,
         roomId: this.roomId,
         vector: { direction: 'x', orientation: 1 },
         gameState: this.gameState,
         player: this.ownPlayer,
-        timestamp: this.frameCounter,
-        cb: (timestamp: number, gameState: GameState) => {
-          this.emittedGameStates.set(timestamp, JSON.stringify(gameState));
-        },
       };
       if (e.key === Key.Right) {
         this.eventAggregator.Publish(
@@ -201,33 +164,36 @@ export default class GameController {
     this.eventAggregator.AddSubscriber(EventType.GameStarted, startGame);
     this.eventAggregator.AddSubscriber(EventType.KeyPressed, movePlayer);
     this.eventAggregator.AddSubscriber(EventType.KeyUp, stopPlayer);
-    this.eventAggregator.AddSubscriber(EventType.GenerateLocalFrame, requestServerFrame);
     this.eventAggregator.AddSubscriber(EventType.JoiningGame, joinGame);
   }
 
   private setupSocket() {
-    this.socket.on('compareGameStates', (gameState: SerializedGameState, timestamp:number) => {
-      if (this.emittedGameStates.has(timestamp)) {
-        const state = this.emittedGameStates.get(timestamp);
-        if (state !== JSON.stringify(gameState)) {
-          console.log('NZ', timestamp);
-          console.log(state);
-          console.log(JSON.stringify(gameState));
-          this.gameState = GameStateFactory.deserializeGameState(gameState);
-        }
-
-        this.emittedGameStates.delete(timestamp);
-      } else {
-        console.log('KLATKA ZGUBIONA');
-      }
-    });
-
     this.socket.on('joinedGame', (gameState: SerializedGameState, roomId: string) => {
       this.roomId = roomId;
       this.gameState = GameStateFactory.deserializeGameState(gameState);
       this.worldUpdater.gameState = this.gameState;
       this.ownPlayer = this.gameState.getPlayers()[1];
       this.generateFrame(0);
+    });
+
+    this.socket.on('setGamestate', () => {
+      this.emittedGameStates.set(this.tickCounter, JSON.stringify(this.gameState));
+      this.tickCounter += 1;
+    });
+
+    this.socket.on('processTick', (tickId: number, serializedPlayer: SerializedPlayer) => {
+      this.socket.emit('actions', this.ownPlayer.queue, this.roomId);
+      this.worldUpdater.updateWorld();
+      this.emittedGameStates.set(this.tickCounter, JSON.stringify(this.gameState));
+      this.tickCounter += 1;
+      const saved = <string>this.emittedGameStates.get(tickId);
+      const lastGameState: GameState = GameStateFactory.deserializeGameState(JSON.parse(saved));
+
+      if (JSON.stringify(serializedPlayer) !== JSON.stringify(lastGameState.getPlayers()[0])) {
+        console.log(tickId);
+        console.log(JSON.stringify(serializedPlayer));
+        console.log(JSON.stringify(lastGameState.getPlayers()[0]));
+      }
     });
   }
 }

@@ -8,11 +8,8 @@ export default class JoiningGame implements IEvent {
 
   roomId: string;
 
-  timestamp: number;
-
-  constructor(args:{ socket: Socket, roomId: string, timestamp: number }) {
+  constructor(args:{ socket: Socket, roomId: string }) {
     this.socket = args.socket;
     this.roomId = args.roomId;
-    this.timestamp = args.timestamp;
   }
 }

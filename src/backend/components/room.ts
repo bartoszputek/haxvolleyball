@@ -5,6 +5,8 @@ export default class Room {
 
   private gameState: GameState;
 
+  public queue: (() => void)[] = [];
+
   constructor(id:string, gameState: GameState) {
     this.id = id;
     this.gameState = gameState;

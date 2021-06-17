@@ -11,13 +11,18 @@ export default function startGame(socket: Socket, rooms: Room[]) {
     worldUpdater.gameState = gameState;
     const room = new Room(socket.id, gameState);
     rooms.push(room);
-    socket.emit('setGamestate', gameState);
 
-    let i = 1;
+    socket.join(socket.id);
+
+    let tickId = 1;
+    socket.emit('setGamestate', gameState, tickId);
     setInterval(() => {
       worldUpdater.updateWorld();
-      socket.emit('processTick', i, gameState.getPlayers()[0]);
-      i += 1;
+      // console.log(gameState.getPlayers()[1]);
+      socket.emit('processTick', tickId, gameState.getPlayers()[0]);
+      // socket.broadcast.emit('processTick', i, gameState.getPlayers()[0]);
+      // socket.to(socket.id).emit('processTick', i, gameState.getPlayers()[1]);
+      tickId += 1;
     }, Globals.TIME_STEP);
   });
 }

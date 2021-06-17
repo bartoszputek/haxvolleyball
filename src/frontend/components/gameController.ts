@@ -1,10 +1,8 @@
 import EventAggregator from 'frontend/components/eventAggregator';
-import ControlButtonPressed from 'frontend/events/controlButtonPressed';
 import {
-  EventType, Key, SerializedGameState, SerializedPlayer,
+  EventType, SerializedGameState, SerializedPlayer,
 } from 'shared/types';
 import { io } from 'socket.io-client';
-import ControlButtonUp from 'frontend/events/controlButtonUp';
 import GameBoard from 'frontend/components/gameBoard';
 import GameState from 'shared/components/gameState';
 import Player from 'shared/components/player';
@@ -16,6 +14,7 @@ import GameStateFactory from 'shared/components/gameStateFactory';
 import joinGame from 'frontend/subscribers/joinGame';
 import JoiningGame from 'frontend/events/joiningGame';
 import WorldUpdater from 'shared/components/worldUpdater';
+import setupControls from 'frontend/utils/setupControls';
 
 export default class GameController {
   private socket;
@@ -36,8 +35,6 @@ export default class GameController {
 
   private tickCounter: number = 1;
 
-  private lastFrameTimeMs: number = 0;
-
   constructor(gameBoard: GameBoard) {
     this.emittedGameStates = new Map <number, string>();
     this.socket = io();
@@ -45,7 +42,6 @@ export default class GameController {
     this.eventAggregator = new EventAggregator();
     this.worldUpdater = new WorldUpdater();
     this.setupEventAggregator();
-    this.setupListeners();
     this.setupSocket();
   }
 
@@ -56,6 +52,7 @@ export default class GameController {
         this.gameState = GameStateFactory.createNewGameState(this.roomId);
         this.worldUpdater.gameState = this.gameState;
         this.ownPlayer = this.gameState.getPlayers()[0];
+        this.setupListeners();
 
         const args = {
           socket: this.socket,
@@ -93,71 +90,7 @@ export default class GameController {
   }
 
   private setupListeners(): void {
-    document.addEventListener('keydown', (e) => {
-      const args = {
-        socket: this.socket,
-        roomId: this.roomId,
-        vector: { direction: 'x', orientation: 1 },
-        gameState: this.gameState,
-        player: this.ownPlayer,
-      };
-      if (e.key === Key.Right) {
-        this.eventAggregator.Publish(
-          new ControlButtonPressed(args),
-        );
-      }
-      if (e.key === Key.Up) {
-        args.vector = { direction: 'y', orientation: -1 };
-        this.eventAggregator.Publish(
-          new ControlButtonPressed(args),
-        );
-      }
-      if (e.key === Key.Left) {
-        args.vector = { direction: 'x', orientation: -1 };
-        this.eventAggregator.Publish(
-          new ControlButtonPressed(args),
-        );
-      }
-      if (e.key === Key.Down) {
-        args.vector = { direction: 'y', orientation: 1 };
-        this.eventAggregator.Publish(
-          new ControlButtonPressed(args),
-        );
-      }
-    });
-
-    document.addEventListener('keyup', (e) => {
-      const args = {
-        socket: this.socket,
-        roomId: this.roomId,
-        vector: { direction: 'x', orientation: 1 },
-        gameState: this.gameState,
-        player: this.ownPlayer,
-      };
-      if (e.key === Key.Right) {
-        this.eventAggregator.Publish(
-          new ControlButtonUp(args),
-        );
-      }
-      if (e.key === Key.Up) {
-        args.vector = { direction: 'y', orientation: -1 };
-        this.eventAggregator.Publish(
-          new ControlButtonUp(args),
-        );
-      }
-      if (e.key === Key.Left) {
-        args.vector = { direction: 'x', orientation: -1 };
-        this.eventAggregator.Publish(
-          new ControlButtonUp(args),
-        );
-      }
-      if (e.key === Key.Down) {
-        args.vector = { direction: 'y', orientation: 1 };
-        this.eventAggregator.Publish(
-          new ControlButtonUp(args),
-        );
-      }
-    });
+    setupControls(this.socket, this.roomId, this.gameState, this.ownPlayer, this.eventAggregator);
   }
 
   private setupEventAggregator(): void {
@@ -169,10 +102,13 @@ export default class GameController {
 
   private setupSocket() {
     this.socket.on('joinedGame', (gameState: SerializedGameState, roomId: string) => {
+      console.log('joined');
       this.roomId = roomId;
       this.gameState = GameStateFactory.deserializeGameState(gameState);
       this.worldUpdater.gameState = this.gameState;
       this.ownPlayer = this.gameState.getPlayers()[1];
+      this.setupListeners();
+
       this.generateFrame(0);
     });
 
@@ -182,6 +118,7 @@ export default class GameController {
     });
 
     this.socket.on('processTick', (tickId: number, serializedPlayer: SerializedPlayer) => {
+      console.log('tick process');
       this.socket.emit('actions', this.ownPlayer.queue, this.roomId);
       this.worldUpdater.updateWorld();
       this.emittedGameStates.set(this.tickCounter, JSON.stringify(this.gameState));

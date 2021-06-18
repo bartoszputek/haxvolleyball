@@ -11,6 +11,10 @@ export default class GameState {
     return this.players;
   }
 
+  getPlayerById(id:string): Player | undefined {
+    return this.players.find((player) => player.id === id);
+  }
+
   addPlayer(player: Player): void {
     this.players.push(player);
   }

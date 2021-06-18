@@ -6,9 +6,9 @@ export default function processActions(socket: Socket, rooms: Room[]) {
     const selectedRoom = rooms.find((room) => room.getId() === roomId);
     if (selectedRoom) {
       const gameState = selectedRoom.getGameState();
-      const selectedPlayer = gameState.getPlayers().find((player) => player.id === socket.id);
-      if (selectedPlayer) {
-        selectedRoom.getGameState().getPlayers()[0].queue = actions;
+      const player = gameState.getPlayerById(socket.id);
+      if (player) {
+        player.queue = actions;
       } else {
         console.log('The player doesn\'t exist in this room');
       }

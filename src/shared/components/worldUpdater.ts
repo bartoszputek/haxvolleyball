@@ -1,7 +1,7 @@
 import GameState from 'shared/components/gameState';
 import Player from 'shared/components/player';
 
-export default class WorldUdpater {
+export default class WorldUpdater {
   gameState!: GameState;
 
   updateWorld() {

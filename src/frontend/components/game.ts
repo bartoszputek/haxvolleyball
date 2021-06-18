@@ -12,7 +12,7 @@ export default class Game {
   }
 
   async start(): Promise<string> {
-    const roomId = await this.gameController.startGame();
+    const roomId = await this.gameController.createGame();
     return roomId;
   }
 

@@ -15,6 +15,7 @@ import joinGame from 'frontend/subscribers/joinGame';
 import JoiningGame from 'frontend/events/joiningGame';
 import WorldUpdater from 'shared/components/worldUpdater';
 import setupControls from 'frontend/utils/setupControls';
+import areEqual from 'frontend/utils/areEqual';
 
 export default class GameController {
   private socket;
@@ -45,21 +46,11 @@ export default class GameController {
     this.setupSocket();
   }
 
-  startGame(): Promise<string> {
+  createGame(): Promise<string> {
     return new Promise((resolve: (roomId: string) => void) => {
       this.socket.on('connect', () => {
         this.roomId = this.socket.id;
-        this.gameState = GameStateFactory.createNewGameState(this.roomId);
-        this.worldUpdater.gameState = this.gameState;
-        this.ownPlayer = this.gameState.getPlayers()[0];
-        this.setupListeners();
-
-        const args = {
-          socket: this.socket,
-        };
-        this.eventAggregator.Publish(new GameStarted(args));
-
-        requestAnimationFrame((timestamp: number) => this.generateFrame(timestamp));
+        this.socket.emit('createGame');
 
         resolve(this.roomId);
       });
@@ -106,30 +97,34 @@ export default class GameController {
       this.roomId = roomId;
       this.gameState = GameStateFactory.deserializeGameState(gameState);
       this.worldUpdater.gameState = this.gameState;
-      this.ownPlayer = this.gameState.getPlayers()[1];
+      this.ownPlayer = <Player>this.gameState.getPlayerById(this.socket.id);
+      this.emittedGameStates.set(this.tickCounter, JSON.stringify(this.gameState));
+      this.tickCounter += 1;
+
       this.setupListeners();
 
       this.generateFrame(0);
     });
 
-    this.socket.on('setGamestate', () => {
-      this.emittedGameStates.set(this.tickCounter, JSON.stringify(this.gameState));
-      this.tickCounter += 1;
-    });
-
-    this.socket.on('processTick', (tickId: number, serializedPlayer: SerializedPlayer) => {
+    this.socket.on('processTick', (tickId: number, serializedGameState: SerializedGameState, queue: any) => {
       console.log('tick process');
       this.socket.emit('actions', this.ownPlayer.queue, this.roomId);
       this.worldUpdater.updateWorld();
+      if (this.socket.id !== this.gameState.getPlayers()[0].id) {
+        this.gameState.getPlayers()[0].queue = queue;
+      }
       this.emittedGameStates.set(this.tickCounter, JSON.stringify(this.gameState));
       this.tickCounter += 1;
       const saved = <string>this.emittedGameStates.get(tickId);
       const lastGameState: GameState = GameStateFactory.deserializeGameState(JSON.parse(saved));
+      const serializedPlayer = GameStateFactory
+        .deserializeGameState(serializedGameState)
+        .getPlayerById(this.socket.id);
 
-      if (JSON.stringify(serializedPlayer) !== JSON.stringify(lastGameState.getPlayers()[0])) {
+      if (areEqual(serializedPlayer, lastGameState.getPlayerById(this.socket.id))) {
         console.log(tickId);
         console.log(JSON.stringify(serializedPlayer));
-        console.log(JSON.stringify(lastGameState.getPlayers()[0]));
+        console.log(JSON.stringify(lastGameState.getPlayerById(this.socket.id)));
       }
     });
   }

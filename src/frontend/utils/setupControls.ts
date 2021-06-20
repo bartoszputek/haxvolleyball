@@ -1,75 +1,49 @@
-import GameState from 'shared/components/gameState';
 import Player from 'shared/components/player';
-import EventAggregator from 'frontend/components/eventAggregator';
-import { Key } from 'shared/types';
-import ControlButtonPressed from 'frontend/events/controlButtonPressed';
-import ControlButtonUp from 'frontend/events/controlButtonUp';
+import WorldUpdater from 'shared/components/worldUpdater';
+import { Action, Key, Vector } from 'shared/types';
 
-export default function setupControls(socket: any, roomId: string,
-  gameState: GameState, player: Player, eventAggregator: EventAggregator) {
+export default function setupControls(player: Player, worldUpdater: WorldUpdater) {
   document.addEventListener('keydown', (e) => {
-    const args = {
-      socket,
-      roomId,
-      vector: { direction: 'x', orientation: 1 },
-      gameState,
-      player,
-    };
+    function move(vector: Vector) {
+      if (!player.isMoving(vector)) {
+        worldUpdater.addPlayerAction(player, Action.Move, vector);
+      }
+    }
+
     if (e.key === Key.Right) {
-      eventAggregator.Publish(
-        new ControlButtonPressed(args),
-      );
+      const vector: Vector = { direction: 'x', orientation: 1 };
+      move(vector);
     }
     if (e.key === Key.Up) {
-      args.vector = { direction: 'y', orientation: -1 };
-      eventAggregator.Publish(
-        new ControlButtonPressed(args),
-      );
+      const vector: Vector = { direction: 'y', orientation: -1 };
+      move(vector);
     }
     if (e.key === Key.Left) {
-      args.vector = { direction: 'x', orientation: -1 };
-      eventAggregator.Publish(
-        new ControlButtonPressed(args),
-      );
+      const vector: Vector = { direction: 'x', orientation: -1 };
+      move(vector);
     }
     if (e.key === Key.Down) {
-      args.vector = { direction: 'y', orientation: 1 };
-      eventAggregator.Publish(
-        new ControlButtonPressed(args),
-      );
+      const vector: Vector = { direction: 'y', orientation: 1 };
+      move(vector);
     }
   });
 
   document.addEventListener('keyup', (e) => {
-    const args = {
-      socket,
-      roomId,
-      vector: { direction: 'x', orientation: 1 },
-      gameState,
-      player,
-    };
     if (e.key === Key.Right) {
-      eventAggregator.Publish(
-        new ControlButtonUp(args),
-      );
+      const vector: Vector = { direction: 'x', orientation: 1 };
+      worldUpdater.addPlayerAction(player, Action.Stop, vector);
     }
     if (e.key === Key.Up) {
-      args.vector = { direction: 'y', orientation: -1 };
-      eventAggregator.Publish(
-        new ControlButtonUp(args),
-      );
+      const vector: Vector = { direction: 'y', orientation: -1 };
+      worldUpdater.addPlayerAction(player, Action.Stop, vector);
     }
     if (e.key === Key.Left) {
-      args.vector = { direction: 'x', orientation: -1 };
-      eventAggregator.Publish(
-        new ControlButtonUp(args),
-      );
+      const vector: Vector = { direction: 'x', orientation: -1 };
+      worldUpdater.addPlayerAction(player, Action.Stop, vector);
     }
     if (e.key === Key.Down) {
-      args.vector = { direction: 'y', orientation: 1 };
-      eventAggregator.Publish(
-        new ControlButtonUp(args),
-      );
+      const vector: Vector = { direction: 'y', orientation: 1 };
+      worldUpdater.addPlayerAction(player, Action.Stop, vector);
     }
   });
 }

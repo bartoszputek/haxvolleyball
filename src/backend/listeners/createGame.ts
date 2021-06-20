@@ -7,7 +7,6 @@ export default function createGame(socket: Socket, rooms: Room[]) {
     const gameState = GameStateFactory.createNewGameState(socket.id);
     const room = new Room(socket.id, gameState);
     rooms.push(room);
-    socket.join(socket.id);
-    socket.emit('joinedGame', gameState, socket.id, 0);
+    room.queues.set(socket.id, []);
   });
 }

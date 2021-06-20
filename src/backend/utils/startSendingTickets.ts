@@ -1,22 +1,28 @@
 import Room from 'backend/components/room';
+import BallFactory from 'shared/components/ballFactory';
 import WorldUpdater from 'shared/components/worldUpdater';
 import Globals from 'shared/globals';
 import { Server } from 'socket.io';
+import handleQueues from './handleQueues';
 
 export default function startSendingTickets(room: Room, io: Server) {
-  const gameState = room.getGameState();
-  const worldUpdater = new WorldUpdater();
+  room.worldUpdater = new WorldUpdater();
+  const { worldUpdater, gameState } = room;
   worldUpdater.gameState = gameState;
 
   let tickId = 1;
 
+  gameState.setBall(BallFactory.createBlueBall());
+
   setInterval(() => {
-    const { queue } = gameState.getPlayers()[0];
+    const queues = handleQueues(room);
+
     worldUpdater.updateWorld();
-    io.in(room.getId()).emit('processTick', tickId, gameState, queue);
-    // socket.emit('processTick', tickId, gameState.getPlayers()[0]);
-    // socket.broadcast.emit('processTick', i, gameState.getPlayers()[0]);
-    // socket.to(socket.id).emit('processTick', i, gameState.getPlayers()[1]);
+
+    const hostId = gameState.getPlayers()[0].id;
+    const joinId = gameState.getPlayers()[1].id;
+    io.to(hostId).emit('processTick', tickId, gameState, queues[1]);
+    io.to(joinId).emit('processTick', tickId, gameState, queues[0]);
     tickId += 1;
   }, Globals.TIME_STEP);
 }

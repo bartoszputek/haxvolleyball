@@ -1,7 +1,10 @@
 import Player from 'shared/components/player';
+import Ball from 'shared/components/ball';
 
 export default class GameState {
   private players:Player[];
+
+  private ball?:Ball;
 
   constructor(players: Player[]) {
     this.players = players;
@@ -17,5 +20,13 @@ export default class GameState {
 
   addPlayer(player: Player): void {
     this.players.push(player);
+  }
+
+  setBall(ball: Ball): void {
+    this.ball = ball;
+  }
+
+  getBall(): Ball | undefined {
+    return this.ball;
   }
 }

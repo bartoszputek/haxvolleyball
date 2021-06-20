@@ -15,6 +15,18 @@ export default class CoordinateFactory {
     return [x, y];
   }
 
+  static createRedBallCoordinates(): [Coordinate, Coordinate] {
+    const x: Coordinate = new Coordinate(Globals.BALL_RED_STARTING_COORDINATES[0], 0);
+    const y: Coordinate = new Coordinate(Globals.BALL_RED_STARTING_COORDINATES[1], 0);
+    return [x, y];
+  }
+
+  static createBlueBallCoordinates(): [Coordinate, Coordinate] {
+    const x: Coordinate = new Coordinate(Globals.BALL_BLUE_STARTING_COORDINATES[0], 0);
+    const y: Coordinate = new Coordinate(Globals.BALL_BLUE_STARTING_COORDINATES[1], 0);
+    return [x, y];
+  }
+
   static deserializeCoordinates(serializedCoordinates: SerializedCoordinate): Coordinate {
     const coordinate: Coordinate = new Coordinate(
       serializedCoordinates.value,

@@ -9,13 +9,19 @@ export default class Globals {
 
   static PLAYER_RADIUS: number = 20;
 
-  static PLAYER_VMAX: number = 5;
-
-  static PLAYER_ACCELERATION: number = 3;
+  static PLAYER_ACCELERATION: number = 0.3;
 
   static PLAYER_RED_STARTING_COORDINATES: [number, number] = [120, 150];
 
   static PLAYER_BLUE_STARTING_COORDINATES: [number, number] = [700, 150];
+
+  static BALL_RADIUS: number = 10;
+
+  static BALL_RED_STARTING_COORDINATES: [number, number] = [100, 100];
+
+  static BALL_BLUE_STARTING_COORDINATES: [number, number] = [400, 100];
+
+  static BALL_COLOR: string = '#ffffff';
 
   static COLOR_BLUE_TEAM: string = '#1650ff';
 

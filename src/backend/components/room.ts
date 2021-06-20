@@ -1,22 +1,18 @@
 import GameState from 'shared/components/gameState';
+import WorldUpdater from 'shared/components/worldUpdater';
+import { Action } from 'shared/types';
 
 export default class Room {
-  private id:string;
+  id:string;
 
-  private gameState: GameState;
+  gameState: GameState;
 
-  public queue: (() => void)[] = [];
+  worldUpdater!: WorldUpdater;
+
+  queues:Map<string, [Action, any][]> = new Map();
 
   constructor(id:string, gameState: GameState) {
     this.id = id;
     this.gameState = gameState;
-  }
-
-  getId(): string {
-    return this.id;
-  }
-
-  getGameState(): GameState {
-    return this.gameState;
   }
 }

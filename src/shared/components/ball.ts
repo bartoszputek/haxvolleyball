@@ -1,20 +1,16 @@
-import { Team, Vector } from 'shared/types';
+import { Action, Vector } from 'shared/types';
 import Coordinate from 'shared/components/coordinate';
 
-export default class Player {
-  id:string;
-
+export default class Ball {
   x:Coordinate;
 
   y:Coordinate;
 
-  team:Team;
+  queue:[Action, Vector][] = [];
 
-  constructor(id:string, x:Coordinate, y:Coordinate, team:Team) {
-    this.id = id;
+  constructor(x:Coordinate, y:Coordinate) {
     this.x = x;
     this.y = y;
-    this.team = team;
   }
 
   isMoving(vector: Vector): boolean {
@@ -32,6 +28,10 @@ export default class Player {
   }
 
   move(vector: Vector): void {
+    this.queue.push([Action.Move, vector]);
+  }
+
+  private moveAction(vector: Vector): void {
     if (vector.direction === 'x') {
       this.x.setOrientation(vector.orientation * 1);
     }
@@ -41,6 +41,10 @@ export default class Player {
   }
 
   stop(vector: Vector): void {
+    this.queue.push([Action.Stop, vector]);
+  }
+
+  private stopAction(vector: Vector): void {
     if (vector.direction === 'x') {
       if (this.x.getOrientation() === vector.orientation) {
         this.x.setOrientation(0);
@@ -51,5 +55,17 @@ export default class Player {
         this.y.setOrientation(0);
       }
     }
+  }
+
+  handleActions() {
+    this.queue.forEach((action) => {
+      if (action[0] === Action.Move) {
+        this.moveAction(action[1]);
+      }
+      if (action[0] === Action.Stop) {
+        this.stopAction(action[1]);
+      }
+    });
+    this.queue = [];
   }
 }

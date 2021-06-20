@@ -5,7 +5,7 @@ export enum Team {
   Red,
 }
 
-export enum PlayerAction {
+export enum Action {
   Move,
   Stop,
 }
@@ -22,33 +22,9 @@ export type Vector = {
   orientation: number;
 };
 
-export interface ISubscriber {
-  Handle(Notify: IEvent): void;
-}
-
-export enum EventType {
-  'KeyPressed',
-  'KeyUp',
-  'GenerateLocalFrame',
-  'ReceivedServerFrame',
-  'GameStarted',
-  'JoiningGame',
-}
-
-export interface IEvent {
-  readonly eventType: EventType;
-}
-
-export type SubscriberCallback = (arg: IEvent) => void;
-
-export interface IEventAggregator {
-  AddSubscriber(event: EventType, subscriber: SubscriberCallback): void;
-  RemoveSubscriber(event: EventType, subscriber: SubscriberCallback): void;
-  Publish(event: IEvent): void;
-}
-
 export type SerializedGameState = {
   players:SerializedPlayer[]
+  ball:SerializedBall;
 };
 
 export type SerializedPlayer = {
@@ -56,6 +32,11 @@ export type SerializedPlayer = {
   x:SerializedCoordinate;
   y:SerializedCoordinate;
   team:Team;
+};
+
+export type SerializedBall = {
+  x:SerializedCoordinate;
+  y:SerializedCoordinate;
 };
 
 export type SerializedCoordinate = {

@@ -42,7 +42,7 @@ export default function calculateBallCollision(ball: Ball, player: Player): void
   }
 
   const player1 = calculateDistance(ball, player);
-  if (player1 < Globals.BALL_RADIUS + Globals.PLAYER_RADIUS) {
+  if (player1 <= Globals.BALL_RADIUS + Globals.PLAYER_RADIUS) {
     const x = player.x.value;
     if (x < ball.x.value - Globals.BALL_RADIUS / 2) {
       // left
@@ -67,9 +67,27 @@ export default function calculateBallCollision(ball: Ball, player: Player): void
   }
 }
 
-function calculateDistance(ball: Ball, player: Player): number {
+export function calculateDistance(ball: Ball, player: Player): number {
   return Math.round(Math.sqrt(
     Math.abs(player.x.value - ball.x.value) ** 2
     + Math.abs(player.y.value - ball.y.value) ** 2,
   ));
+}
+
+export function calculateY(ball: Ball, player: Player): number {
+  return Math.round(
+    Math.sqrt(
+      (Globals.BALL_RADIUS + Globals.PLAYER_RADIUS) ** 2
+      - Math.abs(player.x.value - ball.x.value) ** 2,
+    ),
+  );
+}
+
+export function calculateX(ball: Ball, player: Player): number {
+  return Math.round(
+    Math.sqrt(
+      (Globals.BALL_RADIUS + Globals.PLAYER_RADIUS) ** 2
+      - Math.abs(player.y.value - ball.y.value) ** 2,
+    ),
+  );
 }

@@ -35,12 +35,13 @@ export default class WorldUpdater {
   updateWorld() {
     this.handleActions();
     this.updatePlayers();
-    this.updateBall();
+    // this.updateBall();
   }
 
   private updatePlayers(): void {
     this.gameState.getPlayers().forEach((player: Player) => {
-      calculatePlayerCollision(player);
+      const ball = this.gameState.getBall();
+      calculatePlayerCollision(player, ball);
     });
   }
 

@@ -8,6 +8,7 @@ import WorldUpdater from 'shared/components/worldUpdater';
 import setupControls from 'frontend/utils/setupControls';
 import areEqual from 'frontend/utils/areEqual';
 import deserializePlayerActions from 'shared/utils/deserializePlayerActions';
+import deserializeActions from 'shared/utils/deserializeActions';
 
 export default class GameController {
   private socket;
@@ -76,7 +77,7 @@ export default class GameController {
       this.generateFrame(0);
     });
 
-    this.socket.on('processTick', (tickId: number, serializedGameState: SerializedGameState, serverActionQueue: [Action, any][]) => {
+    this.socket.on('processTick', (tickId: number, serializedGameState: SerializedGameState, serverActionQueue: Action[]) => {
       console.log('tick process');
       this.socket.emit('actions', this.worldUpdater.serializedActionQueue, this.roomId);
 
@@ -85,13 +86,17 @@ export default class GameController {
     });
   }
 
-  private synchronizeWorld(serverActionQueue: [Action, any][]) {
-    let actions;
+  private synchronizeWorld(serverActionQueue: Action[]) {
+    let enemyPlayer;
     if (this.ownPlayer === this.gameState.getPlayers()[0]) {
-      actions = deserializePlayerActions(this.gameState.getPlayers()[1], serverActionQueue);
+      enemyPlayer = this.gameState.getPlayers()[1];
     } else {
-      actions = deserializePlayerActions(this.gameState.getPlayers()[0], serverActionQueue);
+      enemyPlayer = this.gameState.getPlayers()[0];
     }
+
+    const ball = this.gameState.getBall();
+
+    const actions = deserializeActions(enemyPlayer, ball, serverActionQueue);
 
     this.worldUpdater.mergeActions(actions);
     this.worldUpdater.updateWorld();

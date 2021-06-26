@@ -1,4 +1,4 @@
-import { Action, Vector } from 'shared/types';
+import { Vector } from 'shared/types';
 import Coordinate from 'shared/components/coordinate';
 
 export default class Ball {
@@ -6,32 +6,18 @@ export default class Ball {
 
   y:Coordinate;
 
-  queue:[Action, Vector][] = [];
+  acc_x: number;
+
+  acc_y: number;
 
   constructor(x:Coordinate, y:Coordinate) {
     this.x = x;
     this.y = y;
-  }
-
-  isMoving(vector: Vector): boolean {
-    if (vector.direction === 'x') {
-      if (vector.orientation === this.x.getOrientation()) {
-        return true;
-      }
-    }
-    if (vector.direction === 'y') {
-      if (vector.orientation === this.y.getOrientation()) {
-        return true;
-      }
-    }
-    return false;
+    this.acc_x = 0;
+    this.acc_y = -0.3;
   }
 
   move(vector: Vector): void {
-    this.queue.push([Action.Move, vector]);
-  }
-
-  private moveAction(vector: Vector): void {
     if (vector.direction === 'x') {
       this.x.setOrientation(vector.orientation * 1);
     }
@@ -41,10 +27,6 @@ export default class Ball {
   }
 
   stop(vector: Vector): void {
-    this.queue.push([Action.Stop, vector]);
-  }
-
-  private stopAction(vector: Vector): void {
     if (vector.direction === 'x') {
       if (this.x.getOrientation() === vector.orientation) {
         this.x.setOrientation(0);
@@ -55,17 +37,5 @@ export default class Ball {
         this.y.setOrientation(0);
       }
     }
-  }
-
-  handleActions() {
-    this.queue.forEach((action) => {
-      if (action[0] === Action.Move) {
-        this.moveAction(action[1]);
-      }
-      if (action[0] === Action.Stop) {
-        this.stopAction(action[1]);
-      }
-    });
-    this.queue = [];
   }
 }

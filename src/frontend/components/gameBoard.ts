@@ -23,7 +23,6 @@ export default class GameBoard {
     players.forEach((player:Player) => {
       this.drawPlayer(player);
     });
-
     if (ball) {
       this.drawBall(ball);
     }
@@ -45,7 +44,6 @@ export default class GameBoard {
   }
 
   drawBall(ball: Ball): void {
-    console.log('halo');
     this.context.lineWidth = 2;
     this.context.strokeStyle = 'black';
     this.context.beginPath();

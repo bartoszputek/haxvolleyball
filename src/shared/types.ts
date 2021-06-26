@@ -5,10 +5,23 @@ export enum Team {
   Red,
 }
 
-export enum Action {
-  Move,
-  Stop,
+export enum Entity{
+  Player,
+  Ball,
 }
+
+export enum Command{
+  PlayerMove,
+  PlayerStop,
+  BallMove,
+  BallStop,
+}
+
+export type Action = {
+  entity: Entity,
+  command: Command,
+  args: any,
+};
 
 export enum Key{
   Right = 'ArrowRight',

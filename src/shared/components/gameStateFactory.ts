@@ -2,6 +2,7 @@ import GameState from 'shared/components/gameState';
 import Player from 'shared/components/player';
 import { SerializedGameState, SerializedPlayer } from 'shared/types';
 import PlayerFactory from 'shared/components/playerFactory';
+import BallFactory from './ballFactory';
 
 export default class GameStateFactory {
   static createNewGameState(hostId: string): GameState {
@@ -20,6 +21,8 @@ export default class GameStateFactory {
       players.push(PlayerFactory.deserializePlayer(player));
     });
     const gameState = new GameState(players);
+
+    gameState.setBall(BallFactory.deserializeBall(serializedGameState.ball));
 
     return gameState;
   }

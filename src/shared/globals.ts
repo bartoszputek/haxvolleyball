@@ -17,6 +17,10 @@ export default class Globals {
 
   static BALL_RADIUS: number = 10;
 
+  static BALL_MAX_ACCELERATION: number = 0.2;
+
+  static BALL_STEP_ACCELERATION: number = 0.002;
+
   static BALL_RED_STARTING_COORDINATES: [number, number] = [100, 100];
 
   static BALL_BLUE_STARTING_COORDINATES: [number, number] = [400, 100];

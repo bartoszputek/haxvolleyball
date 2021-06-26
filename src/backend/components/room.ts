@@ -9,7 +9,7 @@ export default class Room {
 
   worldUpdater!: WorldUpdater;
 
-  queues:Map<string, [Action, any][]> = new Map();
+  queues:Map<string, Action[]> = new Map();
 
   constructor(id:string, gameState: GameState) {
     this.id = id;

@@ -3,7 +3,7 @@ import GameState from 'shared/components/gameState';
 import Player from 'shared/components/player';
 import { Action } from 'shared/types';
 import calculatePlayerCollision from 'shared/utils/calculatePlayerCollision';
-import calculateBallCollision from 'shared/utils/calculateBallCollision';
+import calculateBallCollision, { calculateBallMove } from 'shared/utils/calculateBallCollision';
 
 export default class WorldUpdater {
   gameState!: GameState;
@@ -35,7 +35,7 @@ export default class WorldUpdater {
   updateWorld() {
     this.handleActions();
     this.updatePlayers();
-    // this.updateBall();
+    this.updateBall();
   }
 
   private updatePlayers(): void {
@@ -48,7 +48,10 @@ export default class WorldUpdater {
   private updateBall(): void {
     const ball = this.gameState.getBall();
     if (ball) {
-      calculateBallCollision(ball, this.gameState.getPlayers()[0]);
+      this.gameState.getPlayers().forEach((player: Player) => {
+        calculateBallCollision(ball, player);
+      });
+      calculateBallMove(ball);
     }
   }
 }

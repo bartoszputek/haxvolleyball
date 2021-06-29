@@ -2,7 +2,7 @@ import Ball from 'shared/components/ball';
 import Player from 'shared/components/player';
 import Globals from 'shared/globals';
 import { Team } from 'shared/types';
-import { calculateDistance, calculateX, calculateY } from 'shared/utils/calculateBallCollision';
+import { calculateDistance, calculateX, calculateY } from 'shared/utils/calculationHelpers';
 
 export default function calculatePlayerCollision(player: Player, ball?: Ball): void {
   player.x.value = calculatePlayerWallCollisionX(player)
@@ -53,7 +53,7 @@ function calculatePlayerWallCollisionY(player: Player): number {
 }
 
 function calculatePlayerBallCollisionX(player: Player, ball?: Ball): number {
-  if (ball) {
+  if (ball && player.x.getOrientation()) {
     const delta = Globals.TIME_STEP;
     const distance = Math.round(player.x.getOrientation() * Globals.PLAYER_ACCELERATION * delta);
     if (ball.x.value > player.x.value) {
@@ -72,7 +72,7 @@ function calculatePlayerBallCollisionX(player: Player, ball?: Ball): number {
 }
 
 function calculatePlayerBallCollisionY(player: Player, ball?: Ball): number {
-  if (ball) {
+  if (ball && player.y.getOrientation()) {
     const delta = Globals.TIME_STEP;
     const distance = Math.round(player.y.getOrientation() * Globals.PLAYER_ACCELERATION * delta);
     if (ball.y.value > player.y.value) {

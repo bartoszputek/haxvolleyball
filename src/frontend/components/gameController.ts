@@ -112,9 +112,9 @@ export default class GameController {
       .getPlayerById(this.socket.id);
 
     if (areEqual(serializedPlayer, lastGameState.getPlayerById(this.socket.id))) {
-      console.log(tickId);
-      console.log(JSON.stringify(serializedPlayer));
-      console.log(JSON.stringify(lastGameState.getPlayerById(this.socket.id)));
+      // console.log(tickId);
+      // console.log(JSON.stringify(serializedPlayer));
+      // console.log(JSON.stringify(lastGameState.getPlayerById(this.socket.id)));
     }
 
     // const serializedBall = GameStateFactory

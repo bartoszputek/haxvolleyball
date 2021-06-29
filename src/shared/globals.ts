@@ -21,6 +21,8 @@ export default class Globals {
 
   static BALL_STEP_ACCELERATION: number = 0.002;
 
+  static BALL_PLAYER_ACCELERATION: number = 0.4;
+
   static BALL_RED_STARTING_COORDINATES: [number, number] = [100, 100];
 
   static BALL_BLUE_STARTING_COORDINATES: [number, number] = [400, 100];

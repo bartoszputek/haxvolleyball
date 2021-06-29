@@ -42,6 +42,8 @@ To run application:
 - Run `$ npm run start`
 - Open on two browsers `localhost:8080/`
 - Create room in first, join to the room on the second window
+
+
 To develop application:
 - Run `$ npm install`
 - Run `$ npm run watch`

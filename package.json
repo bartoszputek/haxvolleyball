@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/backend/index.ts",
   "scripts": {
-    "start": "ts-node src/backend/index.ts",
+    "start": "NODE_PATH=./src ts-node src/backend/index.ts",
     "watch": "concurrently \"npm:watch-front\" \"npm:watch-server\" -c \"bgBlue.bold,bgMagenta.bold\"",
     "watch-front": "webpack --watch",
     "watch-server": "NODE_PATH=./src ts-node-dev --respawn --poll src/backend/index.ts ./tsconfig.server.json",

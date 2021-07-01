@@ -7,7 +7,6 @@ import GameStateFactory from 'shared/components/gameStateFactory';
 import WorldUpdater from 'shared/components/worldUpdater';
 import setupControls from 'frontend/utils/setupControls';
 import areEqual from 'frontend/utils/areEqual';
-import deserializePlayerActions from 'shared/utils/deserializePlayerActions';
 import deserializeActions from 'shared/utils/deserializeActions';
 
 export default class GameController {
@@ -56,7 +55,8 @@ export default class GameController {
     requestAnimationFrame((newTimestamp: number) => this.generateFrame(newTimestamp));
 
     this.gameBoard.eraseCanvas();
-    this.gameBoard.draw(this.gameState.getPlayers(), this.gameState.getBall());
+    this.gameBoard.draw(this.gameState.getPlayers(),
+      this.gameState.getNet(), this.gameState.getBall());
   }
 
   private setupListeners(): void {
@@ -78,11 +78,10 @@ export default class GameController {
     });
 
     this.socket.on('processTick', (tickId: number, serializedGameState: SerializedGameState, serverActionQueue: Action[]) => {
-      console.log('tick process');
+      // console.log('tick process');
       this.socket.emit('actions', this.worldUpdater.serializedActionQueue, this.roomId);
-
-      this.synchronizeWorld(serverActionQueue);
       this.correctWorld(tickId, serializedGameState);
+      this.synchronizeWorld(serverActionQueue);
     });
   }
 
@@ -104,30 +103,29 @@ export default class GameController {
     this.tickCounter += 1;
   }
 
-  private correctWorld(tickId: number, serializedGameState: SerializedGameState) {
+  private correctWorld(tickId: number, serializedGameState: SerializedGameState):void {
     const saved = <string>this.emittedGameStates.get(tickId);
     const lastGameState: GameState = GameStateFactory.deserializeGameState(JSON.parse(saved));
     const serializedPlayer = GameStateFactory
       .deserializeGameState(serializedGameState)
       .getPlayerById(this.socket.id);
 
-    if (areEqual(serializedPlayer, lastGameState.getPlayerById(this.socket.id))) {
-      // console.log(tickId);
+    if (!areEqual(serializedPlayer, lastGameState.getPlayerById(this.socket.id))) {
       // console.log(JSON.stringify(serializedPlayer));
       // console.log(JSON.stringify(lastGameState.getPlayerById(this.socket.id)));
+      if (serializedPlayer) {
+        this.gameState.getPlayers()[0] = serializedPlayer;
+      }
     }
 
-    // const serializedBall = GameStateFactory
-    //   .deserializeGameState(serializedGameState)
-    //   .getBall();
+    const serializedBall = GameStateFactory
+      .deserializeGameState(serializedGameState)
+      .getBall();
 
-    // console.log(serializedGameState);
-
-    // if (areEqual(serializedBall, lastGameState.getBall())) {
-    //   console.log(tickId);
-    //   if (serializedBall) {
-    //     this.gameState.setBall(serializedBall);
-    //   }
-    // }
+    if (!areEqual(serializedBall, lastGameState.getBall())) {
+      if (serializedBall) {
+        this.gameState.setBall(serializedBall);
+      }
+    }
   }
 }

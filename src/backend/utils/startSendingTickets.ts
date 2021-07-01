@@ -1,5 +1,4 @@
 import Room from 'backend/components/room';
-import BallFactory from 'shared/components/ballFactory';
 import WorldUpdater from 'shared/components/worldUpdater';
 import Globals from 'shared/globals';
 import { Server } from 'socket.io';
@@ -11,8 +10,6 @@ export default function startSendingTickets(room: Room, io: Server) {
   worldUpdater.gameState = gameState;
 
   let tickId = 1;
-
-  gameState.setBall(BallFactory.createBlueBall());
 
   setInterval(() => {
     const queues = handleQueues(room);

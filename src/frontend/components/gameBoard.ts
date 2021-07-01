@@ -2,6 +2,7 @@ import Globals from 'shared/globals';
 import { Team } from 'shared/types';
 import Player from 'shared/components/player';
 import Ball from 'shared/components/ball';
+import Net from 'shared/components/net';
 
 export default class GameBoard {
   private element: HTMLCanvasElement;
@@ -19,13 +20,14 @@ export default class GameBoard {
     this.context.clearRect(0, 0, this.element.width, this.element.height);
   }
 
-  draw(players: Player[], ball?:Ball) {
+  draw(players: Player[], net: Net, ball?:Ball) {
     players.forEach((player:Player) => {
       this.drawPlayer(player);
     });
     if (ball) {
       this.drawBall(ball);
     }
+    this.drawNet(net);
   }
 
   drawPlayer(player: Player): void {
@@ -41,6 +43,17 @@ export default class GameBoard {
     }
     this.context.fill();
     this.context.stroke();
+  }
+
+  drawNet(net: Net): void {
+    this.context.lineWidth = 2;
+    this.context.strokeStyle = 'black';
+    this.context.strokeRect(
+      net.x - net.thickness / 2,
+      Globals.CANVAS_HEIGHT - net.height,
+      net.thickness,
+      net.height,
+    );
   }
 
   drawBall(ball: Ball): void {

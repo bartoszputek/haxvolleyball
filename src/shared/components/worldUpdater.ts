@@ -47,9 +47,10 @@ export default class WorldUpdater {
 
   private updateBall(): void {
     const ball = this.gameState.getBall();
+    const net = this.gameState.getNet();
     if (ball) {
       this.gameState.getPlayers().forEach((player: Player) => {
-        calculateBallCollision(ball, player);
+        calculateBallCollision(ball, player, net);
       });
       calculateBallMove(ball);
     }

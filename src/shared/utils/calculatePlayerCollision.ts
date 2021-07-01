@@ -28,7 +28,7 @@ export function calculatePlayerWallCollisionX(player: Player): number {
 
 function getRightBorder(player: Player): number {
   if (player.team === Team.Red) {
-    return Globals.CANVAS_WIDTH / 2;
+    return (Globals.CANVAS_WIDTH - Globals.NET_THICKNESS) / 2;
   }
   return Globals.CANVAS_WIDTH;
 }
@@ -37,7 +37,7 @@ function getLeftBorder(player: Player): number {
   if (player.team === Team.Red) {
     return 0;
   }
-  return Globals.CANVAS_WIDTH / 2;
+  return (Globals.CANVAS_WIDTH + Globals.NET_THICKNESS) / 2;
 }
 
 function calculatePlayerWallCollisionY(player: Player): number {

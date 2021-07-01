@@ -50,6 +50,8 @@ export type SerializedPlayer = {
 export type SerializedBall = {
   x:SerializedCoordinate;
   y:SerializedCoordinate;
+  accX: number;
+  accY: number;
 };
 
 export type SerializedCoordinate = {

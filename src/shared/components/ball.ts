@@ -6,15 +6,15 @@ export default class Ball {
 
   y:Coordinate;
 
-  acc_x: number;
+  accX: number;
 
-  acc_y: number;
+  accY: number;
 
-  constructor(x:Coordinate, y:Coordinate) {
+  constructor(x:Coordinate, y:Coordinate, accX: number, accY: number) {
     this.x = x;
     this.y = y;
-    this.acc_x = 0;
-    this.acc_y = -0.3;
+    this.accX = accX;
+    this.accY = accY;
   }
 
   move(vector: Vector): void {

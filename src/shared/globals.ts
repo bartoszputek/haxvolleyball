@@ -23,11 +23,21 @@ export default class Globals {
 
   static BALL_PLAYER_ACCELERATION: number = 0.4;
 
-  static BALL_RED_STARTING_COORDINATES: [number, number] = [100, 100];
+  static BALL_STARTING_X_ACCELERATION: number = 0;
 
-  static BALL_BLUE_STARTING_COORDINATES: [number, number] = [400, 100];
+  static BALL_STARTING_Y_ACCELERATION: number = -0.3;
+
+  static BALL_RED_STARTING_COORDINATES: [number, number] = [400, 100];
+
+  static BALL_BLUE_STARTING_COORDINATES: [number, number] = [600, 100];
 
   static BALL_COLOR: string = '#ffffff';
+
+  static NET_CENTER_POINT: number = Globals.CANVAS_WIDTH / 2;
+
+  static NET_HEIGHT: number = 200;
+
+  static NET_THICKNESS: number = 8;
 
   static COLOR_BLUE_TEAM: string = '#1650ff';
 

@@ -12,7 +12,7 @@ export default function joinGame(socket: Socket, rooms: Room[], startSendingTick
       const { gameState } = selectedRoom;
       const newPlayer = PlayerFactory.createJoinPlayer(socket.id);
       gameState.addPlayer(newPlayer);
-      gameState.setBall(BallFactory.createBlueBall());
+      gameState.setBall(BallFactory.createRedBall());
       socket.emit('joinedGame', gameState, roomId);
       socket.to(roomId).emit('joinedGame', gameState, roomId);
       startSendingTickets(selectedRoom);

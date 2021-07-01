@@ -1,13 +1,17 @@
 import Player from 'shared/components/player';
 import Ball from 'shared/components/ball';
+import Net from 'shared/components/net';
 
 export default class GameState {
   private players:Player[];
 
   private ball?:Ball;
 
+  private net: Net;
+
   constructor(players: Player[]) {
     this.players = players;
+    this.net = new Net();
   }
 
   getPlayers(): Player[] {
@@ -28,5 +32,9 @@ export default class GameState {
 
   getBall(): Ball | undefined {
     return this.ball;
+  }
+
+  getNet(): Net {
+    return this.net;
   }
 }

@@ -7,11 +7,64 @@
     padding: 5px;
 }
 
-.input-roomId{
+.float-container{
+    box-sizing: border-box;
+    position: relative;
     width: 300px;
-    height: 30px;
-    border: #484848 solid 2px;
+    height: 50px;
 }
+
+.input-roomId{
+    box-sizing: border-box;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding-top: 13px;
+    padding-left: 10px;
+    font-size: 20px;
+    border-radius: 4px;
+    background-color: transparent;
+    border: rgb(98, 98, 98) solid 3px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    z-index: 2;
+
+    &:focus{  
+      border: rgb(0, 0, 0) solid 3px;
+      outline: none;
+    }
+}
+
+.input-label{
+    z-index: 1;
+    position: absolute;
+    padding-top: 18px;
+    padding-left: 13px;
+    font-size: 20px;
+}
+
+@mixin label-reduced {
+    padding-top: 3px;
+    padding-left: 5px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.input-roomId:focus + .input-label {
+    @include label-reduced;
+    transition: all 0.1s ease-in;
+}
+
+.input-roomId:valid + .input-label  {
+    @include label-reduced;
+}
+
+// .input-roomId{
+//     border: 0;
+//     background-color: transparent;
+//     border: rgb(98, 98, 98) solid 3px;
+//     border-radius: 4px;
+
+// }
 
 .button{
     box-sizing: border-box;

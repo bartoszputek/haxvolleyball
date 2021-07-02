@@ -1,0 +1,71 @@
+.form-container {
+    width: 300px;
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.input-roomId{
+    width: 300px;
+    height: 30px;
+    border: #484848 solid 2px;
+}
+
+.button{
+    box-sizing: border-box;
+    height: 30px;
+    width: 140px;
+    margin-top: 10px;
+    border: 0px;
+    font-weight: 500;
+    border-radius: 2px;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+$newgame-button-color-primary: #009688;
+$newgame-button-color-dark:#00675b;
+
+.newgame-button{
+    background-color: $newgame-button-color-primary;
+
+    &:hover{
+        background-color: $newgame-button-color-dark;
+    }
+
+    &:active{
+        background-color: $newgame-button-color-primary;
+        outline: none;
+    }
+
+    &:focus{
+        background-color: $newgame-button-color-dark;      
+        border: black solid 1px;
+        outline: none;
+    }
+    
+}
+
+$join-button-color-primary: #26c6da;
+$join-button-color-dark: #0095a8;
+
+.join-button{
+    background-color: $join-button-color-primary;
+
+    &:hover{
+        background-color: $join-button-color-dark;
+    }
+
+    &:active{
+        background-color: $join-button-color-primary;
+    }  
+
+    &:focus{
+        background-color: $join-button-color-dark;      
+        border: black solid 1px;
+        outline: none;
+    }
+}

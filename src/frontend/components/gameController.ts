@@ -8,11 +8,18 @@ import WorldUpdater from 'shared/components/worldUpdater';
 import setupControls from 'frontend/utils/setupControls';
 import areEqual from 'frontend/utils/areEqual';
 import deserializeActions from 'shared/utils/deserializeActions';
+import GameLogger from 'frontend/components/gameLogger';
 
 export default class GameController {
+  private gameBoard: GameBoard;
+
+  private gameLogger: GameLogger;
+
+  private worldUpdater: WorldUpdater;
+
   private socket;
 
-  private roomId!: string;
+  public roomId!: string;
 
   private gameState!: GameState;
 
@@ -20,35 +27,23 @@ export default class GameController {
 
   private emittedGameStates: Map<number, string>;
 
-  private gameBoard: GameBoard;
-
-  private worldUpdater: WorldUpdater;
-
   private tickCounter: number = 1;
 
-  constructor(gameBoard: GameBoard) {
+  constructor(gameBoard: GameBoard, gameLogger: GameLogger) {
+    this.gameBoard = gameBoard;
+    this.gameLogger = gameLogger;
+    this.worldUpdater = new WorldUpdater();
     this.emittedGameStates = new Map <number, string>();
     this.socket = io();
-    this.gameBoard = gameBoard;
-    this.worldUpdater = new WorldUpdater();
     this.setupSocket();
   }
 
-  createGame(): Promise<string> {
-    return new Promise((resolve: (roomId: string) => void) => {
-      this.socket.on('connect', () => {
-        this.roomId = this.socket.id;
-        this.socket.emit('createGame');
-
-        resolve(this.roomId);
-      });
-    });
+  createGame(): void {
+    this.socket.emit('createGame');
   }
 
   joinGame(roomId: string):void {
-    this.socket.on('connect', () => {
-      this.socket.emit('joinGame', roomId);
-    });
+    this.socket.emit('joinGame', roomId);
   }
 
   generateFrame(timestamp: number): void {
@@ -64,8 +59,13 @@ export default class GameController {
   }
 
   private setupSocket() {
+    this.socket.on('createdGame', (roomId: string) => {
+      this.gameLogger.setRoomId(roomId);
+    });
+
     this.socket.on('joinedGame', (gameState: SerializedGameState, roomId: string) => {
       this.roomId = roomId;
+      this.gameLogger.setRoomId(roomId);
       this.gameState = GameStateFactory.deserializeGameState(gameState);
       this.worldUpdater.gameState = this.gameState;
       this.ownPlayer = <Player>this.gameState.getPlayerById(this.socket.id);

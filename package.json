@@ -5,12 +5,14 @@
   "main": "src/backend/index.ts",
   "scripts": {
     "start": "NODE_PATH=./src ts-node src/backend/index.ts",
-    "watch": "concurrently \"npm:watch-front\" \"npm:watch-server\" -c \"bgBlue.bold,bgMagenta.bold\"",
+    "watch": "concurrently \"npm:watch-front\" \"npm:watch-server\" \"npm:watch-styles\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\"",
     "watch-front": "webpack --watch",
     "watch-server": "NODE_PATH=./src ts-node-dev --respawn --poll src/backend/index.ts ./tsconfig.server.json",
+    "watch-styles": "sass --watch assets/css/style.scss public/css/style.css",
     "build": "npm run build-front && npm run build-server",
     "build-front": "webpack",
     "build-server": "tsc -p ./tsconfig.server.json",
+    "build-styles": "sass assets/css/style.scss public/css/style.css --style compressed --no-source-map",
     "clean": "rm -r ./build && rm -r ./public/scripts/*.js",
     "test": "jest"
   },
@@ -40,6 +42,7 @@
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-import": "^2.23.4",
     "jest": "^27.0.3",
+    "sass": "^1.35.1",
     "ts-jest": "^27.0.2",
     "ts-loader": "^9.2.2",
     "ts-node": "^10.0.0",

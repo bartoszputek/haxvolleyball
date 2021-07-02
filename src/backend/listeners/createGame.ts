@@ -8,5 +8,6 @@ export default function createGame(socket: Socket, rooms: Room[]) {
     const room = new Room(socket.id, gameState);
     rooms.push(room);
     room.queues.set(socket.id, []);
+    socket.emit('createdGame', room.id);
   });
 }

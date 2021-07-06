@@ -1,4 +1,4 @@
-import { Action, SerializedGameState } from 'shared/types';
+import { Action, NotificationType, SerializedGameState } from 'shared/types';
 import { io } from 'socket.io-client';
 import GameBoard from 'frontend/components/gameBoard';
 import GameState from 'shared/components/gameState';
@@ -21,13 +21,15 @@ export default class GameController {
 
   public roomId!: string;
 
-  private gameState!: GameState;
+  private gameState?: GameState;
 
   private ownPlayer!: Player;
 
   private emittedGameStates: Map<number, string>;
 
   private tickCounter: number = 1;
+
+  private requestAnimationFrame: any;
 
   constructor(gameBoard: GameBoard, gameLogger: GameLogger) {
     this.gameBoard = gameBoard;
@@ -46,12 +48,14 @@ export default class GameController {
     this.socket.emit('joinGame', roomId);
   }
 
-  generateFrame(timestamp: number): void {
-    requestAnimationFrame((newTimestamp: number) => this.generateFrame(newTimestamp));
+  generateFrame(): void {
+    this.requestAnimationFrame = requestAnimationFrame(() => this.generateFrame());
 
     this.gameBoard.eraseCanvas();
-    this.gameBoard.draw(this.gameState.getPlayers(),
-      this.gameState.getNet(), this.gameState.getBall());
+    if (this.gameState) {
+      this.gameBoard.draw(this.gameState.getPlayers(),
+        this.gameState.getNet(), this.gameState.getBall());
+    }
   }
 
   private setupListeners(): void {
@@ -74,11 +78,33 @@ export default class GameController {
 
       this.setupListeners();
 
-      this.generateFrame(0);
+      this.generateFrame();
+    });
+
+    this.socket.on('resetGame', () => {
+      cancelAnimationFrame(this.requestAnimationFrame);
+      this.worldUpdater = new WorldUpdater();
+      this.emittedGameStates = new Map <number, string>();
+      this.gameBoard.eraseCanvas();
+      this.tickCounter = 1;
+      this.gameLogger.setScore(['0', '0']);
+    });
+
+    this.socket.on('getNotification', (text: string, type:NotificationType) => {
+      if (type === NotificationType.Message) {
+        this.gameLogger.addMessage(text);
+      }
+      if (type === NotificationType.Error) {
+        this.gameLogger.addError(text);
+      }
+    });
+
+    this.socket.on('getScore', (score:[string, string]) => {
+      this.gameLogger.setScore(score);
     });
 
     this.socket.on('processTick', (tickId: number, serializedGameState: SerializedGameState, serverActionQueue: Action[]) => {
-      // console.log('tick process');
+      console.log('tick process');
       this.socket.emit('actions', this.worldUpdater.serializedActionQueue, this.roomId);
       this.correctWorld(tickId, serializedGameState);
       this.synchronizeWorld(serverActionQueue);
@@ -86,6 +112,10 @@ export default class GameController {
   }
 
   private synchronizeWorld(serverActionQueue: Action[]) {
+    if (!this.gameState) {
+      return;
+    }
+
     let enemyPlayer;
     if (this.ownPlayer === this.gameState.getPlayers()[0]) {
       enemyPlayer = this.gameState.getPlayers()[1];
@@ -104,6 +134,10 @@ export default class GameController {
   }
 
   private correctWorld(tickId: number, serializedGameState: SerializedGameState):void {
+    if (!this.gameState) {
+      return;
+    }
+
     const saved = <string>this.emittedGameStates.get(tickId);
     const lastGameState: GameState = GameStateFactory.deserializeGameState(JSON.parse(saved));
     const serializedPlayer = GameStateFactory
@@ -114,6 +148,7 @@ export default class GameController {
       // console.log(JSON.stringify(serializedPlayer));
       // console.log(JSON.stringify(lastGameState.getPlayerById(this.socket.id)));
       if (serializedPlayer) {
+        // ??
         this.gameState.getPlayers()[0] = serializedPlayer;
       }
     }

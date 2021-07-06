@@ -1,5 +1,3 @@
-export type Nullable<T> = T | null;
-
 export enum Team {
   Blue,
   Red,
@@ -22,6 +20,11 @@ export type Action = {
   command: Command,
   args: any,
 };
+
+export enum NotificationType{
+  Message,
+  Error,
+}
 
 export enum Key{
   Right = 'ArrowRight',

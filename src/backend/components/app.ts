@@ -7,6 +7,7 @@ import joinGame from 'backend/listeners/joinGame';
 import processActions from 'backend/listeners/processActions';
 import createGame from 'backend/listeners/createGame';
 import startSendingTickets from 'backend/utils/startSendingTickets';
+import leaveGame from 'backend/listeners/leaveGame';
 
 export default class App {
   private httpServer: http.Server;
@@ -40,6 +41,7 @@ export default class App {
       createGame(socket, this.rooms);
       joinGame(socket, this.rooms,
         (room: Room) => startSendingTickets(room, this.io));
+      leaveGame(socket, this.rooms);
       processActions(socket, this.rooms);
     };
 

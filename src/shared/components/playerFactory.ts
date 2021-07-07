@@ -1,6 +1,6 @@
+import CoordinateFactory from 'shared/components/coordinateFactory';
 import Player from 'shared/components/player';
 import { SerializedPlayer, Team } from 'shared/types';
-import CoordinateFactory from './coordinateFactory';
 
 export default class PlayerFactory {
   static createHostPlayer(hostId: string): Player {

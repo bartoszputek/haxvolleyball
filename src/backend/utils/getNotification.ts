@@ -6,5 +6,4 @@ export default function getNotification(content:string, type:NotificationType)
   const time = getCurrentTime();
   const message = `[${time}] ${content}`;
   return [message, type];
-  // socket.emit('getNotification', message, type);
 }

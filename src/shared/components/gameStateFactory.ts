@@ -2,7 +2,7 @@ import GameState from 'shared/components/gameState';
 import Player from 'shared/components/player';
 import { SerializedGameState, SerializedPlayer } from 'shared/types';
 import PlayerFactory from 'shared/components/playerFactory';
-import BallFactory from './ballFactory';
+import BallFactory from 'shared/components/ballFactory';
 
 export default class GameStateFactory {
   static createNewGameState(hostId: string): GameState {

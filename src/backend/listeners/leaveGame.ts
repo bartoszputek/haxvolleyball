@@ -1,4 +1,5 @@
 import Room from 'backend/components/room';
+import deleteRoom from 'backend/utils/deleteRoom';
 import getNotification from 'backend/utils/getNotification';
 import getSocketRoom from 'backend/utils/getSocketRoom';
 import { NotificationType } from 'shared/types';
@@ -12,6 +13,7 @@ export default function leaveGame(socket: Socket, rooms: Room[]) {
       const message = 'Player has left the game!';
       socket.to(room.id).emit('getNotification', ...getNotification(message, NotificationType.Error));
       socket.to(room.id).emit('resetGame');
+      deleteRoom(room, rooms);
     }
   });
 }

@@ -42,4 +42,6 @@ export default class Globals {
   static COLOR_BLUE_TEAM: string = '#1650ff';
 
   static COLOR_RED_TEAM: string = '#ff2e2e';
+
+  static MAX_ROOMS_NUMBER: number = 100;
 }

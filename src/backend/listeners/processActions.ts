@@ -4,17 +4,19 @@ import { Socket } from 'socket.io';
 
 export default function processActions(socket: Socket, rooms: Room[]) {
   socket.on('actions', (actions: Action[], roomId: string) => {
-    const selectedRoom = rooms.find((room) => room.id === roomId);
-    if (selectedRoom) {
+    try {
+      const selectedRoom = rooms.find((room) => room.id === roomId);
+      if (!selectedRoom) {
+        throw new Error('The room no longer/never exist!');
+      }
       const { gameState } = selectedRoom;
       const player = gameState.getPlayerById(socket.id);
-      if (player) {
-        selectedRoom.queues.set(socket.id, actions);
-      } else {
-        console.log('The player doesn\'t exist in this room');
+      if (!player) {
+        throw new Error('The player doesn\'t exist in this room');
       }
-    } else {
-      console.log('The room no longer/never exist!');
+      selectedRoom.queues.set(socket.id, actions);
+    } catch (error) {
+      console.log(error.message);
     }
   });
 }

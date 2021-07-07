@@ -104,7 +104,6 @@ export default class GameController {
     });
 
     this.socket.on('processTick', (tickId: number, serializedGameState: SerializedGameState, serverActionQueue: Action[]) => {
-      console.log('tick process');
       this.socket.emit('actions', this.worldUpdater.serializedActionQueue, this.roomId);
       this.correctWorld(tickId, serializedGameState);
       this.synchronizeWorld(serverActionQueue);
@@ -148,8 +147,7 @@ export default class GameController {
       // console.log(JSON.stringify(serializedPlayer));
       // console.log(JSON.stringify(lastGameState.getPlayerById(this.socket.id)));
       if (serializedPlayer) {
-        // ??
-        this.gameState.getPlayers()[0] = serializedPlayer;
+        this.ownPlayer = serializedPlayer;
       }
     }
 

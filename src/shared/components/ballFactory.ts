@@ -1,7 +1,7 @@
+import Ball from 'shared/components/ball';
+import CoordinateFactory from 'shared/components/coordinateFactory';
 import Globals from 'shared/globals';
 import { SerializedBall } from 'shared/types';
-import Ball from './ball';
-import CoordinateFactory from './coordinateFactory';
 
 export default class BallFactory {
   static createRedBall(): Ball {

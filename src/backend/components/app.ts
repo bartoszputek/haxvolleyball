@@ -8,6 +8,9 @@ import processActions from 'backend/listeners/processActions';
 import createGame from 'backend/listeners/createGame';
 import startSendingTickets from 'backend/utils/startSendingTickets';
 import leaveGame from 'backend/listeners/leaveGame';
+import dotenv from 'dotenv';
+import helmet from 'helmet';
+import compression from 'compression';
 
 export default class App {
   private httpServer: http.Server;
@@ -21,7 +24,12 @@ export default class App {
   constructor() {
     this.app = express();
     this.httpServer = http.createServer(this.app);
+    dotenv.config();
 
+    if (process.env.NODE_ENV === 'production') {
+      this.app.use(compression());
+      this.app.use(helmet());
+    }
     this.app.set('view engine', 'ejs');
     this.app.set('views', path.join(__dirname, '../../views'));
     this.app.use(express.static(path.join(__dirname, '../../../public')));
@@ -50,7 +58,10 @@ export default class App {
 
   private setupRoutes() {
     this.app.get('/', (req, res) => {
-      console.log('Homepage');
+      res.render('index');
+    });
+
+    this.app.use((req, res) => {
       res.render('index');
     });
   }

@@ -8,34 +8,40 @@ import { Socket } from 'socket.io';
 export default function joinGame(socket: Socket, rooms: Room[],
   startSendingTickets: (room: Room) => void) {
   socket.on('joinGame', (roomId: string) => {
-    const selectedRoom = rooms.find((room) => room.id === roomId);
-    if (selectedRoom) {
-      const hostPlayerId = selectedRoom.gameState.getPlayers()[0].id;
-      if (hostPlayerId === socket.id) {
-        const message = 'You can\'t join to your room!';
-        socket.emit('getNotification', ...getNotification(message, NotificationType.Error));
-      } else if (selectedRoom.isFull()) {
-        const message = 'The room is full!';
-        socket.emit('getNotification', ...getNotification(message, NotificationType.Error));
-      } else {
-        selectedRoom.queues.set(socket.id, []);
-        socket.join(selectedRoom.id);
-        const { gameState } = selectedRoom;
-        const newPlayer = PlayerFactory.createJoinPlayer(socket.id);
-        gameState.addPlayer(newPlayer);
-        gameState.setBall(BallFactory.createRedBall());
-        socket.emit('joinedGame', gameState, roomId);
+    try {
+      const selectedRoom = rooms.find((room) => room.id === roomId);
 
-        const message = 'Succesfully joined to the room.';
-        socket.emit('getNotification', ...getNotification(message, NotificationType.Message));
-
-        socket.to(hostPlayerId).emit('joinedGame', gameState, roomId);
-        startSendingTickets(selectedRoom);
+      if (!selectedRoom) {
+        throw new Error('The room no longer/never exist!');
       }
-    } else {
-      const message = 'The room no longer/never exist!';
-      socket.emit('getNotification', ...getNotification(message, NotificationType.Error));
-      console.log('The room no longer/never exist!');
+
+      const hostPlayerId = selectedRoom.gameState.getPlayers()[0].id;
+
+      if (hostPlayerId === socket.id) {
+        throw new Error('You can\'t join to your room!');
+      }
+
+      if (selectedRoom.isFull()) {
+        throw new Error('The room is full!');
+      }
+
+      selectedRoom.queues.set(socket.id, []);
+      socket.join(selectedRoom.id);
+      const { gameState } = selectedRoom;
+      const newPlayer = PlayerFactory.createJoinPlayer(socket.id);
+      gameState.addPlayer(newPlayer);
+      gameState.setBall(BallFactory.createRedBall());
+      socket.emit('joinedGame', gameState, roomId);
+
+      const message = 'Succesfully joined to the room.';
+      socket.emit('getNotification', ...getNotification(message, NotificationType.Message));
+      socket.to(hostPlayerId).emit('joinedGame', gameState, roomId);
+
+      startSendingTickets(selectedRoom);
+    } catch (error) {
+      socket.emit('getNotification', ...getNotification(error.message, NotificationType.Error));
+      console.log(error.message);
+      // logger
     }
   });
 }

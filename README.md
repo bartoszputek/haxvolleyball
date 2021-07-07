@@ -29,11 +29,10 @@ Project is created with:
 * Game states synchronization with authoritative server prevents from cheating based on https://www.gabrielgambetta.com/client-server-game-architecture.html
 
 ## TODO
-- [ ] Create web design
-- [ ] Create logger and notification system
-- [ ] Add net and physics
-- [ ] Metagame - points/respawn ball/reset game etc.
+- [ ] Create logger for backend
+- [ ] Create error handler for backend
 - [ ] Deploy application on server
+- [ ] Write some tests for public functions
 
 ## Setup
 To run application:

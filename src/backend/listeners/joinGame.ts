@@ -1,3 +1,4 @@
+import logger from 'backend/components/logger';
 import Room from 'backend/components/room';
 import getNotification from 'backend/utils/getNotification';
 import BallFactory from 'shared/components/ballFactory';
@@ -40,8 +41,7 @@ export default function joinGame(socket: Socket, rooms: Room[],
       startSendingTickets(selectedRoom);
     } catch (error) {
       socket.emit('getNotification', ...getNotification(error.message, NotificationType.Error));
-      console.log(error.message);
-      // logger
+      logger.error(error);
     }
   });
 }

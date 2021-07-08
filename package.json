@@ -13,7 +13,7 @@
     "build-front": "webpack --mode=production",
     "build-server": "tsc -p ./tsconfig.server.json",
     "build-styles": "sass assets/css/style.scss public/css/style.css --style compressed --no-source-map",
-    "clean": "rm -r ./build && rm -r ./public",
+    "clean": "rm -r ./build && rm -r ./public && rm logs.log",
     "test": "jest"
   },
   "repository": {
@@ -33,7 +33,8 @@
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "socket.io": "^4.1.2",
-    "socket.io-client": "^4.1.2"
+    "socket.io-client": "^4.1.2",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@types/compression": "^1.7.1",

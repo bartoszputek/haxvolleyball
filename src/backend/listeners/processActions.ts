@@ -1,3 +1,4 @@
+import logger from 'backend/components/logger';
 import Room from 'backend/components/room';
 import { Action } from 'shared/types';
 import { Socket } from 'socket.io';
@@ -16,7 +17,7 @@ export default function processActions(socket: Socket, rooms: Room[]) {
       }
       selectedRoom.queues.set(socket.id, actions);
     } catch (error) {
-      console.log(error.message);
+      logger.error(error);
     }
   });
 }

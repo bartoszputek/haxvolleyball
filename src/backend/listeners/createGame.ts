@@ -1,3 +1,4 @@
+import logger from 'backend/components/logger';
 import Room from 'backend/components/room';
 import generateID from 'backend/utils/generateID';
 import getNotification from 'backend/utils/getNotification';
@@ -29,8 +30,7 @@ export default function createGame(socket: Socket, rooms: Room[]) {
       socket.emit('createdGame', room.id);
     } catch (error) {
       socket.emit('getNotification', ...getNotification(error.message, NotificationType.Error));
-      console.log(error.message);
-      // logger
+      logger.error(error);
     }
   });
 }

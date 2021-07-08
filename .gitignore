@@ -2,3 +2,4 @@
 /build
 /public/scripts/*.js
 /public/css/
+logs.log

@@ -1,5 +1,6 @@
 # HaxVolleyball
 Open-source realtime multiplayer game based on popular haxball game.
+Available on http://104.248.252.7/
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
@@ -29,8 +30,8 @@ Project is created with:
 * Game states synchronization with authoritative server prevents from cheating based on https://www.gabrielgambetta.com/client-server-game-architecture.html
 
 ## TODO
-- [ ] Deploy application on server
 - [ ] Write some tests for public functions
+- [ ] Prepare CI/CD, configure domain/ssl
 
 ## Setup
 To run application:
@@ -47,7 +48,7 @@ To develop application:
 
 ## Screens
 
-Coming soon.
+![Main](./readme-images/1.png)
 
 ## License
 You can check out the full license [here](./LICENSE)

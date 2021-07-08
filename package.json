@@ -2,9 +2,9 @@
   "name": "haxvolleyball",
   "version": "1.0.0",
   "description": "",
-  "main": "src/backend/index.ts",
+  "main": "build/backend/index.js",
   "scripts": {
-    "start": "NODE_PATH=./src ts-node src/backend/index.ts",
+    "start": "NODE_PATH=./build node build/backend/index.js",
     "watch": "concurrently \"npm:watch-front\" \"npm:watch-server\" \"npm:watch-styles\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\"",
     "watch-front": "webpack --watch",
     "watch-server": "NODE_PATH=./src ts-node-dev --respawn --poll src/backend/index.ts ./tsconfig.server.json",

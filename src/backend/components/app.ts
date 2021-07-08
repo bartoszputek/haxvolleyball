@@ -31,7 +31,7 @@ export default class App {
       this.app.use(helmet());
     }
     this.app.set('view engine', 'ejs');
-    this.app.set('views', path.join(__dirname, '../../views'));
+    this.app.set('views', path.join(__dirname, '../../../views'));
     this.app.use(express.static(path.join(__dirname, '../../../public')));
 
     this.setupSockets();

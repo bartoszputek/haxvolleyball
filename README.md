@@ -31,6 +31,7 @@ Project is created with:
 
 ## TODO
 - [ ] Write some tests for public functions
+- [ ] Fix bug related to communication on remote server
 - [ ] Prepare CI/CD, configure domain/ssl
 
 ## Setup
